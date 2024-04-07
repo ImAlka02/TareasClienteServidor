@@ -5,15 +5,102 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EncuestasServidor.Views"
              xmlns:vm="clr-namespace:EncuestasServidor.ViewModels"
+             xmlns:Wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.DataContext>
         <vm:EncuestaViewModel></vm:EncuestaViewModel>
     </UserControl.DataContext>
+
     <StackPanel Background="Red">
         <TextBlock FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta1}"></TextBlock>
         <TextBlock  FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta2}"></TextBlock>
         <TextBlock  FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta3}"></TextBlock>
+
+        <StackPanel Background="White" Margin="25">
+            <Label Margin="10" HorizontalAlignment="Center">¡Su opinón es importante para nosotros!, Haganosla saber</Label>
+            <UniformGrid Columns="3" Height="250">
+                
+                <Wpf:PieChart LegendLocation="Bottom" Margin="5" Grid.ColumnSpan="1">
+                    <Wpf:PieChart.Series>
+                        <Wpf:PieSeries Title="1"
+                                   Values="3"
+                                   DataLabels="True" 
+                                   LabelPoint="{Binding Pointlabel}" >
+
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="2"
+                        Values="5"
+                        DataLabels="True" 
+                        LabelPoint="{Binding Pointlabel}" >
+
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="3"
+                            Values="3"
+                            DataLabels="True" 
+                            LabelPoint="{Binding Pointlabel}" >
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="4"
+                            Values="7"
+                            DataLabels="True" 
+                            LabelPoint="{Binding Pointlabel}" >
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="5"
+                            Values="1"
+                            DataLabels="True" 
+                            LabelPoint="{Binding Pointlabel}" >
+                        </Wpf:PieSeries>
+                    </Wpf:PieChart.Series>
+                </Wpf:PieChart>
+                
+
+                
+                <Wpf:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Bottom" Grid.ColumnSpan="2">
+                    <Wpf:CartesianChart.AxisX>
+                        <Wpf:Axis Title="Preguntas"
+                                  Labels="{Binding Labels}">
+                        </Wpf:Axis>
+                    </Wpf:CartesianChart.AxisX>
+                    
+                    <Wpf:CartesianChart.AxisY>
+                        <Wpf:Axis Title="Respuestas"
+                                   Labels="{Binding Labels}">
+                        </Wpf:Axis>
+                    </Wpf:CartesianChart.AxisY>
+                </Wpf:CartesianChart>
+                <Wpf:PieChart LegendLocation="Bottom" Grid.ColumnSpan="3">
+                    <Wpf:PieChart.Series>
+                        <Wpf:PieSeries Title="1" 
+                                     Values="3" 
+                                     DataLabels="True" 
+                                     LabelPoint="{Binding Pointlabel}">
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="2"
+                      Values="3"
+                      DataLabels="True" 
+                      LabelPoint="{Binding Pointlabel}" >
+
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="3"
+                          Values="2"
+                          DataLabels="True" 
+                          LabelPoint="{Binding Pointlabel}" >
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="4"
+                          Values="6"
+                          DataLabels="True" 
+                          LabelPoint="{Binding Pointlabel}" >
+                        </Wpf:PieSeries>
+                        <Wpf:PieSeries Title="5"
+                          Values="3"
+                          DataLabels="True" 
+                          LabelPoint="{Binding Pointlabel}" >
+                        </Wpf:PieSeries>
+
+                    </Wpf:PieChart.Series>
+                </Wpf:PieChart>
+            </UniformGrid>
+        </StackPanel>
 
     </StackPanel>
 </UserControl>

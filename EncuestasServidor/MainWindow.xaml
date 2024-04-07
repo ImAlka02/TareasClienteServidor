@@ -6,10 +6,12 @@
         xmlns:local="clr-namespace:EncuestasServidor"
         xmlns:views ="clr-namespace:EncuestasServidor.Views"
         xmlns:vm="clr-namespace:EncuestasServidor.ViewModels"
+        xmlns:Wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    
+        Title="Encuesta de satisfacción al cliente" Height="450" Width="800">
+
     <StackPanel>
         <views:ResultadosEncuestaView></views:ResultadosEncuestaView>
     </StackPanel>
+  
 </Window>
