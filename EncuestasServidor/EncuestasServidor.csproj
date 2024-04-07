@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Tenis-removebg-preview.png" />
     <None Remove="Assets\Tenis.png" />
+    <None Remove="Assets\TenisColor-removebg-preview.png" />
     <None Remove="Assets\TenisColor.png" />
   </ItemGroup>
 
@@ -19,8 +21,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\Tenis.png" />
-    <Resource Include="Assets\TenisColor.png" />
+    <Resource Include="Assets\Tenis-removebg-preview.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Tenis.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\TenisColor-removebg-preview.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\TenisColor.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -28,9 +40,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\Estilo.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\Index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

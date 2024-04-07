@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace EncuestasServidor.Views
 {
-	/// <summary>
-	/// Lógica de interacción para ResultadosEncuestaView.xaml
-	/// </summary>
-	public partial class ResultadosEncuestaView : UserControl
-	{
-		public ResultadosEncuestaView()
-		{
-			InitializeComponent();
-		}
-	}
+    /// <summary>
+    /// Lógica de interacción para ResultadosEncuestaView.xaml
+    /// </summary>
+    public partial class ResultadosEncuestaView : UserControl
+    {
+        public ResultadosEncuestaView()
+        {
+            InitializeComponent();
+        }
+    }
 }

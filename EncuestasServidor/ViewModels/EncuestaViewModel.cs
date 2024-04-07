@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace EncuestasServidor.ViewModels
 {
@@ -35,6 +37,5 @@ namespace EncuestasServidor.ViewModels
 
 		}
 		public event PropertyChangedEventHandler? PropertyChanged;
-
-	}
+    }
 }
