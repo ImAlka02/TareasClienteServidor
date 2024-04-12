@@ -10,12 +10,23 @@ using System.Threading.Tasks;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System.Windows.Navigation;
+using System.Net;
 
 namespace EncuestasServidor.ViewModels
 {
 	public partial class EncuestaViewModel : INotifyPropertyChanged
 	{
 		EncuestaServer server = new();
+
+		public string IP
+		{
+			get
+			{
+				return string.Join(",", Dns.GetHostAddresses(Dns.GetHostName()).
+					Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+					.Select(x => x.ToString()));
+			}
+		}
 
 		public decimal TotalEncuestados { get; set; } 
 		public decimal Preguntaunosuma { get; set; }

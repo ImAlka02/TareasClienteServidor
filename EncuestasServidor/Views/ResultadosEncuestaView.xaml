@@ -13,6 +13,7 @@
     </UserControl.DataContext>
 
     <StackPanel Background="#07afd9">
+        <TextBlock Text="{Binding IP}" Foreground="White" FontFamily="sans-serif" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 20 0 0" FontSize="20"></TextBlock>
         <StackPanel Orientation="Horizontal">
             <TextBlock Foreground="White" FontFamily="sans-serif" FontSize="25px" Margin="225,25,50,25" HorizontalAlignment="Stretch" TextAlignment="Center">Resultados de la encuesta</TextBlock>
             <Image Width="50" Height="50" Source="/Assets/TenisColor-removebg-preview.png"></Image>
