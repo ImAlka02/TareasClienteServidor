@@ -12,9 +12,11 @@
         <vm:EncuestaViewModel></vm:EncuestaViewModel>
     </UserControl.DataContext>
 
-    <StackPanel Background="White">
-        
-        <TextBlock FontSize="25" Margin="50,0,50,0" HorizontalAlignment="Stretch" TextAlignment="Center">Resultados de la encuesta</TextBlock> 
+    <StackPanel Background="#07afd9">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Foreground="White" FontFamily="sans-serif" FontSize="25px" Margin="225,25,50,25" HorizontalAlignment="Stretch" TextAlignment="Center">Resultados de la encuesta</TextBlock>
+            <Image Width="50" Height="50" Source="/Assets/TenisColor-removebg-preview.png"></Image>
+        </StackPanel>
         <TextBlock Visibility="Collapsed" FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta1}"></TextBlock>
         <TextBlock Visibility="Collapsed" FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta2}"></TextBlock>
         <TextBlock Visibility="Collapsed" FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta3}"></TextBlock>
@@ -37,18 +39,18 @@
             <Border BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="1" Grid.Column="0" Margin="50,0,0,0"></Border>
             <Border BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"></Border>
 
-            <TextBlock TextAlignment="Right" Margin="50,0,10,0" Grid.Column="0"  Grid.Row="0">5 ☆彡</TextBlock>
-            <TextBlock TextAlignment="Right" Margin="50,35,10,0" Grid.Column="0"  Grid.Row="0">4 ☆彡</TextBlock>
-            <TextBlock TextAlignment="Right" Margin="50,70,10,0" Grid.Column="0"  Grid.Row="0">3 ☆彡</TextBlock>
-            <TextBlock TextAlignment="Right" Margin="50,105,10,0" Grid.Column="0"  Grid.Row="0">2 ☆彡</TextBlock>
-            <TextBlock TextAlignment="Right" Margin="50,140,10,0" Grid.Column="0"  Grid.Row="0">1 ☆彡</TextBlock>
+            <TextBlock Foreground="White" FontFamily="sans-serif" TextAlignment="Right" Margin="50,0,10,0" Grid.Column="0"  Grid.Row="0">5 ☆彡</TextBlock>
+            <TextBlock Foreground="White" FontFamily="sans-serif" TextAlignment="Right" Margin="50,35,10,0" Grid.Column="0"  Grid.Row="0">4 ☆彡</TextBlock>
+            <TextBlock Foreground="White" FontFamily="sans-serif" TextAlignment="Right" Margin="50,70,10,0" Grid.Column="0"  Grid.Row="0">3 ☆彡</TextBlock>
+            <TextBlock Foreground="White" FontFamily="sans-serif" TextAlignment="Right" Margin="50,105,10,0" Grid.Column="0"  Grid.Row="0">2 ☆彡</TextBlock>
+            <TextBlock Foreground="White" FontFamily="sans-serif" TextAlignment="Right" Margin="50,140,10,0" Grid.Column="0"  Grid.Row="0">1 ☆彡</TextBlock>
 
-            <Rectangle VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Fill="Blue" Width="40" Height="{Binding preguntaunopromedio}" Margin="0" />
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Margin="5,0,5,0">Pregunta 1</TextBlock>
-            <Rectangle VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="0" Fill="Blue" Width="40" Height="{Binding preguntadospromedio}"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Margin="5,0,5,0">Pregunta 2</TextBlock>
-            <Rectangle VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="0" Fill="Blue" Width="40" Height="{Binding preguntatrespromedio}"/>
-            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Margin="5,0,5,0">Pregunta 3</TextBlock>
+            <Rectangle VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Fill="DarkBlue" Width="40" Height="{Binding preguntaunopromedio}" Margin="0" />
+            <TextBlock FontStyle="Oblique" Foreground="White" FontFamily="sans-serif" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Margin="5,5,5,0">Productos</TextBlock>
+            <Rectangle VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="0" Fill="DarkBlue" Width="40" Height="{Binding preguntadospromedio}"/>
+            <TextBlock FontStyle="Oblique" Foreground="White" FontFamily="sans-serif" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Margin="5,5,5,0">Atención al cliente</TextBlock>
+            <Rectangle VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="0" Fill="DarkBlue" Width="40" Height="{Binding preguntatrespromedio}"/>
+            <TextBlock FontStyle="Oblique" Foreground="White" FontFamily="sans-serif" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Margin="5,5,5,0">Servicio</TextBlock>
 
         </Grid>
     </StackPanel>

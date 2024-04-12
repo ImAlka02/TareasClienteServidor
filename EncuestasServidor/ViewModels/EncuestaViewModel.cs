@@ -30,7 +30,6 @@ namespace EncuestasServidor.ViewModels
 
 
 		public decimal Preguntatressuma { get; set; } 
-		private decimal Preguntatrespromedio;
 
 		public decimal preguntatrespromedio
 		{
@@ -56,8 +55,6 @@ namespace EncuestasServidor.ViewModels
 
 			Preguntaunosuma = encuesta.pregunta1;	
 			preguntaunopromedio =  TotalEncuestados == 0 ? 0 : (Preguntaunosuma/TotalEncuestados)*35; 
-
-
 
             encuesta.pregunta2 = encuesta.pregunta2 + e.pregunta2;
 			Preguntadossuma = encuesta.pregunta2;
