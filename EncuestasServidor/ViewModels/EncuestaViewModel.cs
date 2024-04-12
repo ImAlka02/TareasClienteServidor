@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiveCharts;
 using LiveCharts.Wpf;
+using System.Windows.Navigation;
 
 namespace EncuestasServidor.ViewModels
 {
@@ -16,34 +17,24 @@ namespace EncuestasServidor.ViewModels
 	{
 		EncuestaServer server = new();
 
-		public int TotalEncuestados { get; set; } = 1;
-		public decimal Preguntaunosuma { get; set; } = 1;
-		private decimal Preguntaunopromedio;
+		public decimal TotalEncuestados { get; set; } 
+		public decimal Preguntaunosuma { get; set; }
 
-		public decimal preguntaunopromedio
-		{
-			get { return (Preguntaunopromedio / Preguntadossuma )*40; }
-			set { Preguntaunopromedio = value; }
-		}
-
-		public decimal Preguntadossuma { get; set; } = 1;
-
-		private decimal Preguntadospromedio;
+		public decimal Preguntadossuma { get; set; } 
+		public decimal preguntaunopromedio { get; set; }
 
 		public decimal preguntadospromedio
 		{
-			get { return (Preguntadospromedio/ TotalEncuestados)*40; }
-			set { Preguntadospromedio = value; }
+			get;set;
 		}
 
 
-		public decimal Preguntatressuma { get; set; } = 1;
+		public decimal Preguntatressuma { get; set; } 
 		private decimal Preguntatrespromedio;
 
 		public decimal preguntatrespromedio
 		{
-			get { return (Preguntatrespromedio/TotalEncuestados)*40; }
-			set { Preguntatrespromedio = value; }
+			get;set;
 		}
 
 
@@ -60,15 +51,25 @@ namespace EncuestasServidor.ViewModels
 
 		private void Server_ResultadoObtenido(object? sender, Models.EncuestaModel e)
 		{
-			encuesta.pregunta1 = encuesta.pregunta1 + e.pregunta1;
-			Preguntaunosuma = encuesta.pregunta1;
-			encuesta.pregunta2 = encuesta.pregunta2 + e.pregunta2;
-			Preguntadossuma = encuesta.pregunta2;
-			encuesta.pregunta3 = encuesta.pregunta3 + e.pregunta3;
-			Preguntatressuma = encuesta.pregunta3;
 			TotalEncuestados++;
+			encuesta.pregunta1 = encuesta.pregunta1 + e.pregunta1;
 
-			PropertyChanged?.Invoke(this, new(nameof(encuesta)));
+			Preguntaunosuma = encuesta.pregunta1;	
+			preguntaunopromedio =  TotalEncuestados == 0 ? 0 : (Preguntaunosuma/TotalEncuestados)*35; 
+
+
+
+            encuesta.pregunta2 = encuesta.pregunta2 + e.pregunta2;
+			Preguntadossuma = encuesta.pregunta2;
+			preguntadospromedio = TotalEncuestados == 0 ? 0 : (Preguntadossuma/TotalEncuestados)*35;
+
+            encuesta.pregunta3 = encuesta.pregunta3 + e.pregunta3;
+			 Preguntatressuma = encuesta.pregunta3;
+			preguntatrespromedio = TotalEncuestados == 0 ? 0 : (Preguntatressuma/ TotalEncuestados)*35;
+
+
+            PropertyChanged?.Invoke(this, new(nameof(encuesta)));
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
         }
 		public event PropertyChangedEventHandler? PropertyChanged;
