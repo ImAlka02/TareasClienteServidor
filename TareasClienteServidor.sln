@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncuestasServidor", "EncuestasServidor\EncuestasServidor.csproj", "{910532B7-F5B3-4B0E-BAA4-95F8882CBAE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EncuestasServidor", "EncuestasServidor\EncuestasServidor.csproj", "{910532B7-F5B3-4B0E-BAA4-95F8882CBAE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiActividades", "ApiActividades\ApiActividades.csproj", "{66236DC7-2DFD-4F53-B85C-249D16D421BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{910532B7-F5B3-4B0E-BAA4-95F8882CBAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{910532B7-F5B3-4B0E-BAA4-95F8882CBAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{910532B7-F5B3-4B0E-BAA4-95F8882CBAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
