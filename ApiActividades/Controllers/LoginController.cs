@@ -23,7 +23,7 @@ namespace ApiActividades.Controllers
 
             if (user == null) { return BadRequest("Falta usuario."); }
 
-            if (user.Password == password)
+            if (user.Password == Encriptacion.StringToSha512(password))
             {
                 JwtTokenGenerator jwtToken = new();
                 return Ok(jwtToken.GetToken(user.IdSuperior, user.Id));

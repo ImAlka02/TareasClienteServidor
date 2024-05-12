@@ -93,7 +93,7 @@ namespace ApiActividades.Controllers
                 IdDepartamento = int.Parse(User.FindFirstValue("Id") ?? "0"),
                 FechaCreacion = DateTime.UtcNow,
                 FechaActualizacion = DateTime.UtcNow,
-                Estado = actividad.Estado ?? 0
+                Estado = 0
             };
 
             repoActividad.Insert(act);
@@ -123,6 +123,20 @@ namespace ApiActividades.Controllers
             return BadRequest("No puedes editar una actividad que no te pertenece");
         }
 
+        [HttpPut("Publicar/{id}")]
+        public ActionResult PublicarActividad(int id)
+        {
+            var actividad = repoActividad.GetById(id);
+            if (actividad == null) { return NotFound(); }
+            if (actividad.IdDepartamento == int.Parse(User.FindFirstValue("Id") ?? "0"))
+            {
+                actividad.Estado = 1;
+                repoActividad.Update(actividad);
+                return Ok("Se publico correctamente");
+            }
+            return BadRequest("No puedes publicar una actividad que no te pertenece");
+        }
+
         [HttpDelete("Eliminar/{id}")]
         public ActionResult EliminarActividad(int id)
         {
@@ -130,7 +144,8 @@ namespace ApiActividades.Controllers
             if (actividad == null) { return NotFound(); }
             if (actividad.IdDepartamento == int.Parse(User.FindFirstValue("Id") ?? "0"))
             {
-                repoActividad.Delete(actividad);
+                actividad.Estado = 2;
+                repoActividad.Update(actividad);
                 return Ok("Se elimino correctamente");
             }
             return BadRequest("No puedes eliminar una actividad que no te pertenece");

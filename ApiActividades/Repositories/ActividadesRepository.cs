@@ -19,5 +19,6 @@ namespace ApiActividades.Repositories
         {
             return context.Actividades.Include(x=>x.IdDepartamentoNavigation).FirstOrDefault(x=>x.Id == id);
         }
+
     }
 }
