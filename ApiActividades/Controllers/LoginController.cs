@@ -26,7 +26,7 @@ namespace ApiActividades.Controllers
             if (user.Password == password)
             {
                 JwtTokenGenerator jwtToken = new();
-                return Ok(jwtToken.GetToken(user.IdSuperior, user.Nombre));
+                return Ok(jwtToken.GetToken(user.IdSuperior, user.Id));
             }
 
             return Unauthorized();

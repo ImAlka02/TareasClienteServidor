@@ -14,16 +14,21 @@ builder.Services.AddDbContext<ItesrcneActividadesContext>(x => x.UseMySql("serve
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true, //No se que haga, PREGUNTAR
-            ValidateIssuerSigningKey = true, //PREGUNTAR
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "CLIENTESERVIDOR2024"))
-        };
+
+
+        options.Audience = "prueba";
+        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes("PROGRAMACIONCLIENTESERVIDOR_2024OPORDIOS"));
+        options.TokenValidationParameters.ValidIssuer = "Saludos";
+
+        //ValidateIssuer = true,
+        //ValidateAudience = true,
+        //ValidateLifetime = true, //No se que haga, PREGUNTAR
+        //ValidateIssuerSigningKey = true, //PREGUNTAR
+        //ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        //ValidAudience = builder.Configuration["Jwt:Audience"],
+        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "CLIENTESERVIDOR2024"))
+    
     });
 
 builder.Services.AddTransient<ActividadesRepository>();
