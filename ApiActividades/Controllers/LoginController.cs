@@ -20,9 +20,9 @@ namespace ApiActividades.Controllers
         [HttpPost]
         public IActionResult Post(UserDTO userDTO)
         {
-            var user = repoDepartamento.GetByName(userDTO.Name);
+            var user = repoDepartamento.GetByEmail(userDTO.Email);
 
-            if (user == null) { return BadRequest("Falta usuario."); }
+            if (user == null) { return NotFound(); }
 
             if (user.Password == Encriptacion.StringToSha512(userDTO.Password))
             {

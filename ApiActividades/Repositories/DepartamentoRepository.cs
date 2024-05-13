@@ -8,9 +8,9 @@ namespace ApiActividades.Repositories
         {
         }
 
-        public Departamentos? GetByName(string name)
+        public Departamentos? GetByEmail(string email)
         {
-            return context.Departamentos.FirstOrDefault(x => x.Nombre == name);
+            return context.Departamentos.FirstOrDefault(x => x.Username == email);
         }
     }
 }
