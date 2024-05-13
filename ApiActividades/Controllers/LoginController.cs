@@ -1,4 +1,5 @@
 ﻿using ApiActividades.Helper;
+using ApiActividades.Models.DTOs;
 using ApiActividades.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +18,13 @@ namespace ApiActividades.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(string username, string password)
+        public IActionResult Post(UserDTO userDTO)
         {
-            var user = repoDepartamento.GetByName(username);
+            var user = repoDepartamento.GetByName(userDTO.Name);
 
             if (user == null) { return BadRequest("Falta usuario."); }
 
-            if (user.Password == Encriptacion.StringToSha512(password))
+            if (user.Password == Encriptacion.StringToSha512(userDTO.Password))
             {
                 JwtTokenGenerator jwtToken = new();
                 return Ok(jwtToken.GetToken(user.IdSuperior, user.Id));
