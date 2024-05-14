@@ -12,7 +12,8 @@ namespace ApiActividades.Repositories
         public virtual IEnumerable<Actividades> GetAll()
         {
             return context.Actividades
-                .Include(x=>x.IdDepartamentoNavigation);
+                .Include(x=>x.IdDepartamentoNavigation)
+                .Include(x=>x.IdDepartamentoNavigation.InverseIdSuperiorNavigation);
         }
 
         public Actividades? GetById(int id)

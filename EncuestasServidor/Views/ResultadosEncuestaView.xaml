@@ -13,11 +13,23 @@
     </UserControl.DataContext>
 
     <StackPanel Background="#07afd9">
-        <TextBlock Text="{Binding IP}" Foreground="White" FontFamily="sans-serif" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 20 0 0" FontSize="20"></TextBlock>
+        
+
         <StackPanel Orientation="Horizontal">
             <TextBlock Foreground="White" FontFamily="sans-serif" FontSize="25px" Margin="225,25,50,25" HorizontalAlignment="Stretch" TextAlignment="Center">Resultados de la encuesta</TextBlock>
             <Image Width="50" Height="50" Source="/Assets/TenisColor-removebg-preview.png"></Image>
         </StackPanel>
+        <WrapPanel HorizontalAlignment="Center">
+
+            <TextBlock Text="IP: " Foreground="White" FontFamily="sans-serif" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="20"></TextBlock>
+
+            <TextBlock Text="{Binding IP}" Foreground="White" FontFamily="sans-serif" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="20"></TextBlock>
+
+            <TextBlock Text="  Total encuestados: " Foreground="White" FontFamily="sans-serif" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"></TextBlock>
+
+            <TextBlock Text="{Binding TotalEncuestados}" Foreground="White" FontFamily="sans-serif" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="20"></TextBlock>
+
+        </WrapPanel>
         <TextBlock Visibility="Collapsed" FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta1}"></TextBlock>
         <TextBlock Visibility="Collapsed" FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta2}"></TextBlock>
         <TextBlock Visibility="Collapsed" FontSize="30" Foreground="Black" Text="{Binding encuesta.pregunta3}"></TextBlock>

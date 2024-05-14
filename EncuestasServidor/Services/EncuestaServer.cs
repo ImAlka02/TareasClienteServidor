@@ -46,9 +46,14 @@ namespace EncuestasServidor.Services
             {
                 var context = server.GetContext();
 				var pagina = File.ReadAllText("Assets/Index.html"); //C:\\Users\\ajiju\\source\\repos\\TareasClienteServidor\\EncuestasServidor\\Assets\\Index.html
-				var bufferPagina = Encoding.UTF8.GetBytes(pagina);
+                var bufferPagina = Encoding.UTF8.GetBytes(pagina);
 
-                if (context.Request.Url != null)
+
+				var paginaGracias = File.ReadAllText("Assets/Gracias.html");
+				var bufferPaginaGracias = Encoding.UTF8.GetBytes(paginaGracias);
+
+
+				if (context.Request.Url != null)
                 {
                     if (context.Request.Url.LocalPath == "/encuesta/")
                     {
@@ -60,11 +65,17 @@ namespace EncuestasServidor.Services
                     else if (context.Request.HttpMethod == "POST" &&
                         context.Request.Url.LocalPath == "/encuesta/enviado")
                     {
-                        byte[] bufferDatos = new byte[context.Request.ContentLength64];
+						
+
+						byte[] bufferDatos = new byte[context.Request.ContentLength64];
                         context.Request.InputStream.Read(bufferDatos, 0, bufferDatos.Length);
                         string datos = Encoding.UTF8.GetString(bufferDatos);
 
-                        var diccionario = HttpUtility.ParseQueryString(datos);
+						context.Response.ContentLength64 = bufferPaginaGracias.Length;
+						context.Response.OutputStream.Write(bufferPaginaGracias, 0, bufferPaginaGracias.Length);
+						context.Response.StatusCode = 200;
+
+						var diccionario = HttpUtility.ParseQueryString(datos);
 
                         EncuestaModel encuesta = new EncuestaModel()
                         {

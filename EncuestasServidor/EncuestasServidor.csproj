@@ -43,6 +43,9 @@
     <None Update="Assets\Estilo.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Assets\Gracias.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\Index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

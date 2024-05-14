@@ -6,7 +6,7 @@ namespace ApiActividades.Helper
 {
     public class JwtTokenGenerator
     {
-        public string GetToken(int? idSuperior, int id)
+        public string GetToken(int? idSuperior, int id, string name)
         {
             List<Claim> claims = new();
 
@@ -22,8 +22,9 @@ namespace ApiActividades.Helper
 
             claims.Add(new Claim("idSuperior", idSuperior.ToString() ?? "0"));
             claims.Add(new Claim("Id", id.ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "Saludos"));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "prueba"));
+			claims.Add(new Claim(ClaimTypes.Name, name));
+			claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "ApiActividades"));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "ActividadesApp"));
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(5).ToString()));
 
@@ -32,8 +33,8 @@ namespace ApiActividades.Helper
             var token = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Issuer = "Saludos",
-                Audience = "prueba",
+                Issuer = "ApiActividades",
+                Audience = "ActividadesApp",
                 IssuedAt = DateTime.Now,
                 Expires = DateTime.Now.AddMinutes(5),
                 NotBefore = DateTime.Now.AddMinutes(-1),

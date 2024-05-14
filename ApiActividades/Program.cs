@@ -16,10 +16,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
 
 
-        options.Audience = "prueba";
+        options.Audience = "ActividadesApp";
         options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes("PROGRAMACIONCLIENTESERVIDOR_2024OPORDIOS"));
-        options.TokenValidationParameters.ValidIssuer = "Saludos";
+        options.TokenValidationParameters.ValidIssuer = "ApiActividades";
 
         //ValidateIssuer = true,
         //ValidateAudience = true,
