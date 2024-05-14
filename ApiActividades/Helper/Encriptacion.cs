@@ -11,7 +11,7 @@ namespace ApiActividades.Helper
             {
                 var arreglo = Encoding.UTF8.GetBytes(password);
                 var hash = sha512.ComputeHash(arreglo);
-                return Convert.ToHexString(hash).ToUpper();
+                return Convert.ToHexString(hash).ToLower();
             }
         }
     }

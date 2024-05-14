@@ -26,7 +26,7 @@ namespace ApiActividades.Controllers
             if (User.FindFirstValue("idSuperior") != "") 
             {
                 var actividades = repoActividad.GetAll() 
-                    .Where(x=> x.IdDepartamento == int.Parse(User.FindFirstValue("Id")??"0") || x.IdDepartamentoNavigation.IdSuperior == int.Parse(User.FindFirstValue("Id") ?? "0"))
+                    .Where(x=> x.IdDepartamento == int.Parse(User.FindFirstValue("Id")??"0") || (x.IdDepartamentoNavigation.IdSuperior == int.Parse(User.FindFirstValue("Id") ?? "0") && x.Estado ==1))
                     .Select(x => new ActividadDTO()
                     {
                         Id = x.Id,
