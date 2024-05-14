@@ -24,7 +24,7 @@ namespace ApiActividades.Controllers
 
             if (user == null) { return NotFound(); }
 
-            if (user.Password == userDTO.Password)
+            if (user.Password == Encriptacion.StringToSha512(userDTO.Password))
             {
                 JwtTokenGenerator jwtToken = new();
                 return Ok(jwtToken.GetToken(user.IdSuperior, user.Id, user.Nombre));
