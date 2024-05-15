@@ -4,6 +4,7 @@ using ApiActividades.Models.Validators;
 using ApiActividades.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 
 namespace ApiActividades.Controllers
@@ -14,33 +15,44 @@ namespace ApiActividades.Controllers
     public class ActividadController : ControllerBase
     {
         private readonly ActividadesRepository repoActividad;
+		private readonly DepartamentoRepository repoDepa;
 
-        public ActividadController(ActividadesRepository repoActividad)
+		public ActividadController(ActividadesRepository repoActividad, DepartamentoRepository repoDepa)
         {
             this.repoActividad = repoActividad;
-        }
+			this.repoDepa = repoDepa;
+		}
         [HttpGet]
         public ActionResult<IEnumerable<ActividadDTO>> Get()
         {
            
             if (User.FindFirstValue("idSuperior") != "") 
             {
-                var actividades = repoActividad.GetAll() 
-                    .Where(x=> x.IdDepartamento == int.Parse(User.FindFirstValue("Id")??"0") || (x.IdDepartamentoNavigation.IdSuperior == int.Parse(User.FindFirstValue("Id") ?? "0") && x.Estado ==1))
-                    .Select(x => new ActividadDTO()
-                    {
-                        Id = x.Id,
-                        Titulo = x.Titulo,
-                        Descripcion = x.Descripcion ??"",
-                        Estado = x.Estado,
-                        FechaRealizacion = x.FechaRealizacion,
-                        NombreDepartamento = x.IdDepartamentoNavigation.Nombre
-                    });
+                //var actividades = repoActividad.GetAll()
+                //    .Where(x => x.IdDepartamento == int.Parse(User.FindFirstValue("Id") ?? "0") || (x.IdDepartamentoNavigation.IdSuperior == int.Parse(User.FindFirstValue("Id") ?? "0") && x.Estado == 1))
+                //    .Select(x => new ActividadDTO()
+                //    {
+                //        Id = x.Id,
+                //        Titulo = x.Titulo,
+                //        Descripcion = x.Descripcion ?? "",
+                //        Estado = x.Estado,
+                //        FechaRealizacion = x.FechaRealizacion,
+                //        NombreDepartamento = x.IdDepartamentoNavigation.Nombre
+                //    }).ToList();
 
-                return Ok(actividades);
-            }
+				List<ActividadDTO> actividades2 = new List<ActividadDTO>();
 
-            var actividades1 = repoActividad.GetAll().Select(x=> new ActividadDTO()
+				// Obtener el departamento del usuario actual
+				int idUsuario = int.Parse(User.FindFirstValue("Id") ?? "0");
+				var departamentoUsuario = repoDepa.Get(idUsuario);  
+
+				// Obtener todas las actividades del departamento actual y sus hijos recursivamente
+				GetActividadesDepartamentoYHijos(departamentoUsuario, actividades2);
+
+                return Ok(actividades2);
+			}
+
+            var actividades1 = repoActividad.GetAll().Where(x=> x.Estado == 1).Select(x=> new ActividadDTO()
             {
                 Id = x.Id,
                 Titulo = x.Titulo,
@@ -53,7 +65,27 @@ namespace ApiActividades.Controllers
             return Ok(actividades1);
         }
 
-        [HttpGet("{id}")]
+		private void GetActividadesDepartamentoYHijos(Departamentos departamento, List<ActividadDTO> actividades)
+		{
+			// Agregar las actividades del departamento actual
+			actividades.AddRange(departamento.Actividades.Where(x=>x.Estado ==1).Select(x => new ActividadDTO()
+			{
+				Id = x.Id,
+				Titulo = x.Titulo,
+				Descripcion = x.Descripcion ?? "",
+				Estado = x.Estado,
+				FechaRealizacion = x.FechaRealizacion,
+				NombreDepartamento = departamento.Nombre
+			}));
+
+			// Recorrer los departamentos hijos recursivamente
+			foreach (var hijo in departamento.InverseIdSuperiorNavigation)
+			{
+				GetActividadesDepartamentoYHijos(hijo, actividades);
+			}
+		}
+
+		[HttpGet("{id}")]
         public ActionResult<ActividadDTO> Get(int id)
         {
             var actividad = repoActividad.GetById(id);

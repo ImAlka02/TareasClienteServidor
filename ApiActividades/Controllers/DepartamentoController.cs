@@ -12,7 +12,8 @@ namespace ApiActividades.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepartamentoController : ControllerBase
+	[Authorize(Roles = "Admin")]
+	public class DepartamentoController : ControllerBase
     {
         private readonly DepartamentoRepository repoDepa;
         private readonly ActividadesRepository repoActividad;
