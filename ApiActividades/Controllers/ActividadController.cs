@@ -44,11 +44,13 @@ namespace ApiActividades.Controllers
 
 				// Obtener el departamento del usuario actual
 				int idUsuario = int.Parse(User.FindFirstValue("Id") ?? "0");
-				var departamentoUsuario = repoDepa.Get(idUsuario);  
+				var departamentoUsuario = repoDepa.GetById(idUsuario);  
 
-				// Obtener todas las actividades del departamento actual y sus hijos recursivamente
-				GetActividadesDepartamentoYHijos(departamentoUsuario, actividades2);
-
+                if(departamentoUsuario == null)
+                {
+                    return BadRequest();
+                }
+                GetActividadesDepartamentoYHijos(departamentoUsuario, actividades2);
                 return Ok(actividades2);
 			}
 
@@ -67,18 +69,34 @@ namespace ApiActividades.Controllers
 
 		private void GetActividadesDepartamentoYHijos(Departamentos departamento, List<ActividadDTO> actividades)
 		{
-			// Agregar las actividades del departamento actual
-			actividades.AddRange(departamento.Actividades.Where(x=>x.Estado ==1).Select(x => new ActividadDTO()
-			{
-				Id = x.Id,
-				Titulo = x.Titulo,
-				Descripcion = x.Descripcion ?? "",
-				Estado = x.Estado,
-				FechaRealizacion = x.FechaRealizacion,
-				NombreDepartamento = departamento.Nombre
-			}));
+          
 
-			// Recorrer los departamentos hijos recursivamente
+            if(departamento.Id == int.Parse(User.FindFirstValue("Id") ?? "0"))
+            {
+                actividades.AddRange(departamento.Actividades.Select(x => new ActividadDTO()
+                {
+                    Id = x.Id,
+                    Titulo = x.Titulo,
+                    Descripcion = x.Descripcion ?? "",
+                    Estado = x.Estado,
+                    FechaRealizacion = x.FechaRealizacion,
+                    NombreDepartamento = departamento.Nombre
+                }));
+            }
+            else
+            {
+                actividades.AddRange(repoDepa.GetById(departamento.Id).Actividades.Where(x => x.Estado == 1).Select(x => new ActividadDTO()
+                {
+                    Id = x.Id,
+                    Titulo = x.Titulo,
+                    Descripcion = x.Descripcion ?? "",
+                    Estado = x.Estado,
+                    FechaRealizacion = x.FechaRealizacion,
+                    NombreDepartamento = departamento.Nombre
+                }));
+            }
+
+            
 			foreach (var hijo in departamento.InverseIdSuperiorNavigation)
 			{
 				GetActividadesDepartamentoYHijos(hijo, actividades);
