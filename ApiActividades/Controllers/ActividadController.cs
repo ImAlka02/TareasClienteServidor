@@ -66,7 +66,6 @@ namespace ApiActividades.Controllers
 
             return Ok(actividades1);
         }
-
 		private void GetActividadesDepartamentoYHijos(Departamentos departamento, List<ActividadDTO> actividades)
 		{
           
@@ -102,6 +101,7 @@ namespace ApiActividades.Controllers
 				GetActividadesDepartamentoYHijos(hijo, actividades);
 			}
 		}
+
 
 		[HttpGet("{id}")]
         public ActionResult<ActividadDTO> Get(int id)
@@ -145,12 +145,53 @@ namespace ApiActividades.Controllers
                 FechaActualizacion = DateTime.UtcNow,
                 Estado = 0
             };
-
             repoActividad.Insert(act);
-            return Ok("Se creo correctamente la activiad");
+
+            if(actividad.Imagen != null)
+            {
+				SubirImg(actividad.Imagen, act.Id);
+			}
+
+			return Ok("Se creo correctamente la activiad");
         }
 
-        [HttpPut("Editar")]
+		private void SubirImg(string img, int idAct)
+		{
+			if (string.IsNullOrEmpty(img)) { }
+				
+
+			try
+			{
+				// Convertir el string base64 a un arreglo de bytes
+				var imageBytes = Convert.FromBase64String(img);
+
+				// Crear la ruta completa para guardar la imagen
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", User.Identity.Name);
+
+				// Asegurarse de que el directorio existe
+				if (!Directory.Exists(filePath))
+				{
+					Directory.CreateDirectory(filePath);
+				}
+
+				// Nombre del archivo
+				var fileName = $"{idAct}.jpg"; // o el formato que prefieras
+
+				// Ruta completa del archivo
+				var fullFilePath = Path.Combine(filePath, fileName);
+
+				// Guardar la imagen en el disco
+				System.IO.File.WriteAllBytes(fullFilePath, imageBytes);
+
+				//return Ok(new { filePath = fullFilePath });
+			}
+			catch (Exception ex)
+			{
+				//return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("Editar")]
         public ActionResult EditarActividad(ActividadDTO actividad)
         {
             ActividadValidator validator = new();
