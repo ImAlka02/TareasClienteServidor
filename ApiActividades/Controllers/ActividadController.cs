@@ -118,6 +118,7 @@ namespace ApiActividades.Controllers
                     Titulo = actividad.Titulo,
                     Descripcion = actividad.Descripcion ?? "",
                     Estado = actividad.Estado,
+                    Imagen = GetImg(actividad.Id),
                     FechaRealizacion = actividad.FechaRealizacion,
                     NombreDepartamento = actividad.IdDepartamentoNavigation.Nombre
                 };
@@ -127,6 +128,27 @@ namespace ApiActividades.Controllers
 
             return NotFound();
         }
+
+        private string GetImg(int id)
+        {
+			try
+			{
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", User.Identity.Name, $"{id}.jpg");
+				if (System.IO.File.Exists(filePath))
+				{
+					var imageBytes = System.IO.File.ReadAllBytes(filePath);
+					return Convert.ToBase64String(imageBytes);
+				}
+				else
+				{
+					return "No tiene imagen"; // o alguna imagen predeterminada
+				}
+			}
+			catch (Exception ex)
+			{
+				return $"Internal server error: {ex.Message}";
+			}
+		}
 
         [HttpPost]
         public ActionResult CrearActividad(ActividadDTO actividad)
@@ -187,7 +209,7 @@ namespace ApiActividades.Controllers
 			}
 			catch (Exception ex)
 			{
-				//return StatusCode(500, $"Internal server error: {ex.Message}");
+				//return $"Internal server error: {ex.Message}");
 			}
 		}
 
@@ -209,7 +231,13 @@ namespace ApiActividades.Controllers
                 actividadDB.FechaActualizacion = DateTime.UtcNow;
 
                 repoActividad.Update(actividadDB);
-                return Ok("Se edito correctamente la activiad");
+
+				if (actividad.Imagen != null)
+				{
+					SubirImg(actividad.Imagen, actividadDB.Id);
+				}
+
+				return Ok("Se edito correctamente la activiad");
             }
             return BadRequest("No puedes editar una actividad que no te pertenece");
         }
