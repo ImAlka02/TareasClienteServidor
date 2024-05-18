@@ -54,7 +54,7 @@ namespace ApiActividades.Controllers
                 return Ok(actividades2);
 			}
 
-            var actividades1 = repoActividad.GetAll().Where(x=> x.Estado == 1).Select(x=> new ActividadDTO()
+            var actividades1 = repoActividad.GetAll().Where(x=> x.Estado == 1 && x.IdDepartamentoNavigation.Username.Contains("@samsung.com")).Select(x=> new ActividadDTO()
             {
                 Id = x.Id,
                 Titulo = x.Titulo,

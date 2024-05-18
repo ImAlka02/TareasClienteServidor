@@ -17,8 +17,8 @@ namespace ApiActividades.Models.Validators
                 .EmailAddress().WithMessage("El correo no es válido.");
             RuleFor(x => x.Contraseña)
                 .NotEmpty().WithMessage("La contraseña no debe estar vacía.");
-            RuleFor(x => x.IdSuperior).NotEmpty().WithMessage("El ID del superior no debe estar vacío.")
-                .Must(ExisteIdSuperior).WithMessage("El ID del superior no existe.");
+            //RuleFor(x => x.IdSuperior).NotEmpty().WithMessage("El ID del superior no debe estar vacío.")
+            //    .Must(ExisteIdSuperior).WithMessage("El ID del superior no existe.");
             this.context = context;
         }
         private bool ExisteIdSuperior(int id)

@@ -26,8 +26,9 @@ namespace ApiActividades.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<DepartamentoDTO>> GetDepartamentos()
         {
-            var departamentos = repoDepa.GetAll().Select(x=> new DepartamentoDTO()
+            var departamentos = repoDepa.GetAll().Where(x=> x.Username.Contains("@samsung.com")).Select(x=> new DepartamentoDTO()
             {
+                Id = x.Id,
                 Nombre = x.Nombre,
                 Correo = x.Username,
                 IdSuperior =  x.IdSuperior ?? 0
@@ -51,7 +52,7 @@ namespace ApiActividades.Controllers
                 Nombre = depa.Nombre,
                 Username = depa.Correo,
                 Password = Encriptacion.StringToSha512(depa.Contraseña),
-                IdSuperior = depa.IdSuperior
+                IdSuperior = depa.IdSuperior ?? null
             };
 
             repoDepa.Insert(d);
@@ -73,6 +74,7 @@ namespace ApiActividades.Controllers
             if(depaBD == null) { return NotFound(); }
 
             depaBD.Nombre = depa.Nombre;
+            depaBD.Username = depa.Correo;
             depaBD.Password = Encriptacion.StringToSha512(depa.Contraseña);
             depaBD.IdSuperior = depa.IdSuperior;
 

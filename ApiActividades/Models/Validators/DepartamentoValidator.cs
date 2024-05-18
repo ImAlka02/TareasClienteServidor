@@ -20,8 +20,8 @@ namespace ApiActividades.Models.Validators
                 .Must(Repetido).WithMessage("El correo ya esta en uso.");
             RuleFor(x => x.Contraseña)
                 .NotEmpty().WithMessage("La contraseña no debe estar vacía.");
-            RuleFor(x => x.IdSuperior).NotEmpty().WithMessage("El ID del superior no debe estar vacío.")
-                .Must(ExisteIdSuperior).WithMessage("El ID del superior no existe.");
+            //RuleFor(x => x.IdSuperior).NotEmpty().WithMessage("El ID del superior no debe estar vacío.")
+            //    .Must(ExisteIdSuperior).WithMessage("El ID del superior no existe.");
             this.context = context;
         }
 
