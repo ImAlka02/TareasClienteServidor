@@ -83,11 +83,22 @@ namespace ApiActividades.Controllers
 
         }
 
-        [HttpDelete("Eliminar")]
+        [HttpDelete("Eliminar/{id}")]
         public ActionResult Delete(int id)
         {
-            var depa = repoDepa.Get(id);
+            var depa = repoDepa.GetById(id);
             if (depa == null) { return NotFound(); }
+            if(int.Parse(User.FindFirstValue("id") ?? "0") == id) { return BadRequest("No te puedes eliminar a ti mismo"); }
+
+
+            if (depa.InverseIdSuperiorNavigation != null)
+            {
+                foreach (var departamento in depa.InverseIdSuperiorNavigation)
+                {
+                    departamento.IdSuperior = depa.IdSuperior;
+                    repoDepa.Update(departamento);
+                }
+            }
 
             var actDelDepa = repoActividad.GetAll().Where(x => x.IdDepartamento == depa.Id).ToList();
 
@@ -95,6 +106,8 @@ namespace ApiActividades.Controllers
             {
                 repoActividad.Delete(act);      
             }
+
+            
             //Se eliminaran si eliminamos al creador de la actividad??
             repoDepa.Delete(depa);
             return Ok("Se elimino correctamente");

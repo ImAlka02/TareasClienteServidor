@@ -118,7 +118,7 @@ namespace ApiActividades.Controllers
                     Titulo = actividad.Titulo,
                     Descripcion = actividad.Descripcion ?? "",
                     Estado = actividad.Estado,
-                    Imagen = GetImg(actividad.Id),
+                    Imagen = GetImg(actividad.Id, actividad.IdDepartamentoNavigation.Nombre),
                     FechaRealizacion = actividad.FechaRealizacion,
                     NombreDepartamento = actividad.IdDepartamentoNavigation.Nombre
                 };
@@ -129,11 +129,11 @@ namespace ApiActividades.Controllers
             return NotFound();
         }
 
-        private string GetImg(int id)
+        private string GetImg(int id, string nombre)
         {
 			try
 			{
-				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", User.Identity.Name, $"{id}.jpg");
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", nombre, $"{id}.jpg");
 				if (System.IO.File.Exists(filePath))
 				{
 					var imageBytes = System.IO.File.ReadAllBytes(filePath);
