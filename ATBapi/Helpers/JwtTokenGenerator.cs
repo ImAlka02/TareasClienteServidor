@@ -2,15 +2,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace ApiActividades.Helper
+namespace ATBapi.Helper
 {
     public class JwtTokenGenerator
     {
-        public string GetToken(int? idSuperior, int id, string name)
+        public string GetToken(int idRole, int id, string name)
         {
             List<Claim> claims = new();
 
-            if(idSuperior == null)
+            if(idRole == 1)
             {
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
             }
@@ -20,11 +20,11 @@ namespace ApiActividades.Helper
                 claims.Add(new Claim(ClaimTypes.Role, "Cajero"));
             }
 
-            claims.Add(new Claim("idSuperior", idSuperior.ToString() ?? "0"));
+            claims.Add(new Claim("idRole", idRole.ToString()));
             claims.Add(new Claim("Id", id.ToString()));
 			claims.Add(new Claim(ClaimTypes.Name, name));
-			claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "ApiActividades"));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "ActividadesApp"));
+			claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "ATBapi"));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "ATBapp"));
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(5).ToString()));
 
@@ -33,8 +33,8 @@ namespace ApiActividades.Helper
             var token = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Issuer = "ApiActividades",
-                Audience = "ActividadesApp",
+                Issuer = "ATBapi",
+                Audience = "ATBapp",
                 IssuedAt = DateTime.Now,
                 Expires = DateTime.Now.AddMinutes(5),
                 NotBefore = DateTime.Now.AddMinutes(-1),

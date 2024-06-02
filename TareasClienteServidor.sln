@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EncuestasServidor", "EncuestasServidor\EncuestasServidor.csproj", "{910532B7-F5B3-4B0E-BAA4-95F8882CBAE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiActividades", "ApiActividades\ApiActividades.csproj", "{66236DC7-2DFD-4F53-B85C-249D16D421BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiActividades", "ApiActividades\ApiActividades.csproj", "{66236DC7-2DFD-4F53-B85C-249D16D421BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATBapi", "ATBapi\ATBapi.csproj", "{B06A37AC-0CBA-483B-AFB1-8D6027F2A5AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66236DC7-2DFD-4F53-B85C-249D16D421BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B06A37AC-0CBA-483B-AFB1-8D6027F2A5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B06A37AC-0CBA-483B-AFB1-8D6027F2A5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B06A37AC-0CBA-483B-AFB1-8D6027F2A5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B06A37AC-0CBA-483B-AFB1-8D6027F2A5AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
