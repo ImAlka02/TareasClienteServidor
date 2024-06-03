@@ -1,5 +1,6 @@
 ﻿using ApiActividades.Repositories;
 using ATBapi.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATBapi.Repositories
 {
@@ -10,20 +11,34 @@ namespace ATBapi.Repositories
             
         }
 
-        public Users GetByEmail(string email)
+        public IEnumerable<Users>? GetAllUsers()
         {
-            try
+            var users = context.Users.Include(x => x.IdRoleNavigation);
+            if (users != null)
             {
-                var user = context.Users.FirstOrDefault(x => x.Correo == email);
-                return user ?? throw new Exception();
-
+                return users;
             }
-            catch (Exception)
+            return null;
+        }
+
+        public Users? GetByEmail(string email)
+        {
+            var user = context.Users.Include(x=>x.IdRoleNavigation).FirstOrDefault(x => x.Correo == email);
+            if(user != null)
             {
-
-                throw new Exception();
+                return user;
             }
-            
+            return null;
+        }
+
+        public Users? GetById(int id) 
+        {            
+            var user = context.Users.Include(x => x.IdRoleNavigation).FirstOrDefault(x=>x.Id == id);
+            if (user != null)
+            {
+                return user;
+            }
+            return null;
         }
 
     }
