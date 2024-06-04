@@ -18,13 +18,13 @@ public partial class atbContext : DbContext
 
     public virtual DbSet<Caja> Caja { get; set; }
 
+    public virtual DbSet<Colaespera> Colaespera { get; set; }
+
     public virtual DbSet<Roles> Roles { get; set; }
 
+    public virtual DbSet<Turno> Turno { get; set; }
+
     public virtual DbSet<Users> Users { get; set; }
-
-    public virtual DbSet<Usuarioxcaja> Usuarioxcaja { get; set; }
-
-   
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,6 +42,17 @@ public partial class atbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(255);
         });
 
+        modelBuilder.Entity<Colaespera>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("colaespera");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.DateTurnoCreado).HasColumnType("datetime");
+            entity.Property(e => e.NumeroTurno).HasMaxLength(8);
+        });
+
         modelBuilder.Entity<Roles>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -52,6 +63,27 @@ public partial class atbContext : DbContext
             entity.Property(e => e.Nombre).HasMaxLength(255);
         });
 
+        modelBuilder.Entity<Turno>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("turno");
+
+            entity.HasIndex(e => e.IdUsuario, "IdUsuario");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.HoraFinal).HasColumnType("datetime");
+            entity.Property(e => e.HoraInicial).HasColumnType("datetime");
+            entity.Property(e => e.IdUsuario).HasColumnType("int(11)");
+            entity.Property(e => e.NumeroTurno).HasMaxLength(8);
+            entity.Property(e => e.TiempoInicio).HasColumnType("time");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Turno)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("turno_ibfk_1");
+        });
+
         modelBuilder.Entity<Users>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -60,43 +92,26 @@ public partial class atbContext : DbContext
 
             entity.HasIndex(e => e.IdRole, "IdRole");
 
+            entity.HasIndex(e => e.IdCaja, "users_caja_idx");
+
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Contraseña).HasMaxLength(255);
             entity.Property(e => e.Correo).HasMaxLength(255);
+            entity.Property(e => e.Estado)
+                .HasMaxLength(45)
+                .HasDefaultValueSql("'Desconectado'");
+            entity.Property(e => e.IdCaja).HasColumnType("int(11)");
             entity.Property(e => e.IdRole).HasColumnType("int(11)");
             entity.Property(e => e.Nombre).HasMaxLength(255);
+
+            entity.HasOne(d => d.IdCajaNavigation).WithMany(p => p.Users)
+                .HasForeignKey(d => d.IdCaja)
+                .HasConstraintName("users_caja");
 
             entity.HasOne(d => d.IdRoleNavigation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.IdRole)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("users_ibfk_1");
-        });
-
-        modelBuilder.Entity<Usuarioxcaja>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("usuarioxcaja");
-
-            entity.HasIndex(e => e.IdCaja, "IdCaja");
-
-            entity.HasIndex(e => e.IdUsuario, "IdUsuario");
-
-            entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.HoraFinal).HasColumnType("datetime");
-            entity.Property(e => e.HoraInicial).HasColumnType("datetime");
-            entity.Property(e => e.IdCaja).HasColumnType("int(11)");
-            entity.Property(e => e.IdUsuario).HasColumnType("int(11)");
-
-            entity.HasOne(d => d.IdCajaNavigation).WithMany(p => p.Usuarioxcaja)
-                .HasForeignKey(d => d.IdCaja)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("usuarioxcaja_ibfk_2");
-
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Usuarioxcaja)
-                .HasForeignKey(d => d.IdUsuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("usuarioxcaja_ibfk_1");
         });
 
         OnModelCreatingPartial(modelBuilder);

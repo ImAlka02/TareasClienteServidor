@@ -23,6 +23,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<CajaRepository>();
+builder.Services.AddTransient<ColaEsperaRepository>();
 var app = builder.Build();
 
 

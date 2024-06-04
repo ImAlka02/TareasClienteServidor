@@ -15,7 +15,13 @@ public partial class Users
 
     public int IdRole { get; set; }
 
+    public int? IdCaja { get; set; }
+
+    public string Estado { get; set; } = null!;
+
+    public virtual Caja? IdCajaNavigation { get; set; }
+
     public virtual Roles IdRoleNavigation { get; set; } = null!;
 
-    public virtual ICollection<Usuarioxcaja> Usuarioxcaja { get; set; } = new List<Usuarioxcaja>();
+    public virtual ICollection<Turno> Turno { get; set; } = new List<Turno>();
 }

@@ -27,7 +27,7 @@ namespace ATBapi.Controllers
             if (user.Contraseña == Encriptacion.StringToSha512(userDTO.Password))
             {
                 JwtTokenGenerator jwtToken = new();
-                return Ok(jwtToken.GetToken(user.IdRole, user.Id, user.Nombre));
+                return Ok(jwtToken.GetToken( user.Id, user.Nombre, user.IdRoleNavigation.Nombre));
             }
 
             return Unauthorized();
