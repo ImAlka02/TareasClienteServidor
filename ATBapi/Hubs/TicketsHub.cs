@@ -6,6 +6,9 @@ using System.Security.Claims;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Threading.Tasks;
+using System;
+using System.Text.RegularExpressions;
 
 namespace ATBapi.Hubs
 {
@@ -23,6 +26,10 @@ namespace ATBapi.Hubs
 			this.repoUser = repoUser;
 		}
 
+
+        //Este metodo genera un ticket el cual aparecera en la pantalla
+        //luego lo manda a la cola de espera en la base de datos esperando
+        //A que un cajero lo reciba
         public async Task<string> GenerarTicket()
         {
             var NumeroTurno = "ATB-0001";
@@ -52,34 +59,72 @@ namespace ATBapi.Hubs
 
         //Al mandar llamar actualizar tabla actualizara el dashboar de la pantalla
         //de espera, y creara un objeto Turno, el cual recibira el cajero
-        //public async Task<TablaEsperaDTO> ActualizarTabla(TablaEsperaDTO dto)
-        //{
-        //    if (dto != null)
-        //    {
-        //        var turnoEspera = repoColaEspera.GetTurnoAsync();
-        //        var nombreCajaDB = repoUser.Get(dto.IdUser)?.IdCajaNavigation?.Nombre;
+        public async Task<TurnoDTO> AtenderCliente(TurnoAtendiendoDTO dto)
+        {
+            var turnos = repoTurno.GetAll().Where(x => x.IdUsuario == dto.IdUser && x.Estado == "Atendiendo");
+            if(turnos.Count() > 0)
+            {
+                foreach (var turno in turnos)
+                {
+                    turno.Estado = "Atendido";
+                    await repoTurno.UpdateAsync(turno);
+                }
+            }
 
-        //        Turno t = new()
-        //        {
-        //            IdUsuario = dto.IdUser,
-        //            HoraInicial = DateTime.UtcNow,
-        //            HoraFinal = null,
-        //            NumeroTurno = turnoEspera.Result.NumeroTurno,
-        //            TiempoInicio = TimeOnly.Parse(turnoEspera.Result.DateTurnoCreado.ToLongTimeString()),
-        //        };
+            if (dto != null)
+            {
+                //Aqui se crea un turno para que el cajero que lo este atendiendo le aparezca en la bd////////
+                var turnoEspera = await repoColaEspera.GetTurnoAsync();
+                var nombreCajaDB = repoUser.Get(dto.IdUser)?.IdCajaNavigation?.Nombre;
 
-        //        await repoTurno.InsertAsync(t);
-        //        TablaEsperaDTO tablaEspera = new()
-        //        {
-        //            IdUser = dto.IdUser,
-        //            NumeroCaja = +,
-        //            NumeroTurno = turnoEspera.Result.NumeroTurno
-        //        }
-        //        return Ok(t);
-        //    }
-        //}
+                Turno t = new()
+                {
+                    IdUsuario = dto.IdUser,
+                    HoraInicial = DateTime.UtcNow,
+                    HoraFinal = null,
+                    NumeroTurno = turnoEspera.NumeroTurno,
+                    TiempoInicio = TimeOnly.Parse(turnoEspera.DateTurnoCreado.ToLongTimeString()),
+                };
 
-        //EL hub puede tener seguridad?
-        //Puede usar cliet?
+                await repoTurno.InsertAsync(t);
+                ///////////////////////////////////////////////////
+                TurnoDTO turnoDto = new()
+                {
+                    Id = t.Id,
+                    NumeroTurno = t.NumeroTurno
+                };
+
+                await repoColaEspera.DeleteAsync(turnoEspera);
+                return turnoDto;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        //Este metodo se coloca despues del metodo AtenderCliente, lo que hace al momento de dar EMPEZAR TURNO o ABRIR CAJA
+        //EL metodo de arriba crea un turno y este metodo actualiza el dashboard para tener en tiempo real los turnos y cajas que estan
+        //Atendiendo
+        public async Task<ActualizarTablaDTO> ActualizarTabla(ActualizarTablaDTO dto)
+        {
+            if (dto != null)
+            {
+                var turno = await repoTurno.GetTurnoByUserAsync(dto.IdCajero);
+
+                if(turno != null)
+                {
+                    ActualizarTablaDTO actualizarTablaDTO = new()
+                    {
+                        IdCajero = dto.IdCajero,
+                        NombreCaja = dto.NombreCaja,
+                        NumeroTurno = turno.NumeroTurno,
+                    };
+
+                    return actualizarTablaDTO;
+                }
+            }
+            return null;
+        }
     }
 }

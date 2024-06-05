@@ -36,5 +36,17 @@ namespace ATBapi.Repositories
             await context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(Colaespera colaEspera)
+        {
+            if (colaEspera == null)
+            {
+                throw new ArgumentNullException(nameof(colaEspera));
+            }
+
+            context.Remove(colaEspera);
+            await context.SaveChangesAsync();
+        }
+
+
     }
 }

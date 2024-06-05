@@ -41,5 +41,15 @@ namespace ATBapi.Repositories
             return null;
         }
 
+        public async Task<Users>? GetByIdAsync(int id)
+        {
+            var user = await context.Users.Include(x => x.IdRoleNavigation).FirstOrDefaultAsync(x => x.Id == id);
+            if (user != null)
+            {
+                return user;
+            }
+            return null;
+        }
+
     }
 }

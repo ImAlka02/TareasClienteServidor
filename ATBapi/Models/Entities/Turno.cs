@@ -17,5 +17,7 @@ public partial class Turno
 
     public TimeOnly TiempoInicio { get; set; }
 
+    public string Estado { get; set; } = null!;
+
     public virtual Users IdUsuarioNavigation { get; set; } = null!;
 }
