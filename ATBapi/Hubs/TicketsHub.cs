@@ -33,27 +33,44 @@ namespace ATBapi.Hubs
         public async Task<string> GenerarTicket()
         {
             var NumeroTurno = "ATB-0001";
-            var TurnosExistentes = await repoColaEspera.GetAllTurnosAsync();
-            if (TurnosExistentes.Any(x=>x.NumeroTurno == NumeroTurno))
+            var colaEsperaList = await repoColaEspera.GetAllTurnosAsync();
+            var turnosDB = await repoTurno.GetAllTurnosAsync();
+            if (turnosDB == null)
             {
-                int n = int.Parse(TurnosExistentes.Last().NumeroTurno.Substring(4, 4)) + 1;
-                NumeroTurno = "ATB-" + n.ToString();
-                Colaespera colaEspera = new()
+                if (colaEsperaList.Count() > 0)
+                {
+                    if (colaEsperaList.Any(x => x.NumeroTurno == NumeroTurno))
+                    {
+                        int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
+                        NumeroTurno = "ATB-" + n.ToString();
+                        Colaespera colaEspera = new()
+                        {
+                            NumeroTurno = NumeroTurno,
+                            DateTurnoCreado = DateTime.Now
+                        };
+                        await repoColaEspera.InsertAsync(colaEspera);
+                        return NumeroTurno;
+                    }
+                }
+                Colaespera colaEspera1 = new()
                 {
                     NumeroTurno = NumeroTurno,
                     DateTurnoCreado = DateTime.Now
                 };
-                await repoColaEspera.InsertAsync(colaEspera);
+
+                await repoColaEspera.InsertAsync(colaEspera1);
                 return NumeroTurno;
             }
 
-            Colaespera colaEspera1 = new()
+            var LastTurnoCreated = turnosDB.Last().NumeroTurno;
+            var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value);
+            Colaespera colaEspera2 = new()
             {
-                NumeroTurno = NumeroTurno,
+                NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString(),
                 DateTurnoCreado = DateTime.Now
             };
 
-            await repoColaEspera.InsertAsync(colaEspera1);
+            await repoColaEspera.InsertAsync(colaEspera2);
             return NumeroTurno;
         }
 
@@ -125,6 +142,35 @@ namespace ATBapi.Hubs
                 }
             }
             return null;
+        }
+
+        //ESte metodo hara que al darle al boton cancelar o no se presento el cliente
+        //en la tabla Turnos ese cliente aparezca en su estado que fue cancelado y/o no se presento
+        public async void ClienteCancelar(int IdTurno)
+        {
+            if(IdTurno > 0)
+            {
+                var turno = await repoTurno.GetTurnoByIdAsync(IdTurno);
+                if (turno != null)
+                {
+                    turno.Estado = "Cancelado";
+                    repoTurno.UpdateAsync(turno);
+                }
+            }
+        }
+
+        //Este metodo hara que al cerrar el banco el Admin se limpie
+        //La tabla ColaEspera
+        public async void CerrarBanco()
+        {
+            var ColaEsperaList = repoColaEspera.GetAll();
+            if(ColaEsperaList.Count() > 0)
+            {
+                foreach (var turno in ColaEsperaList)
+                {
+                    repoColaEspera.DeleteAsync(turno);
+                }
+            }
         }
     }
 }
