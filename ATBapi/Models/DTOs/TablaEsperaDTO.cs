@@ -2,7 +2,8 @@
 {
     public class TablaEsperaDTO
     {
-        public string NombreCaja { get; set; } = null!;
-        public string NumeroTurno { get; set; } = null!;
+        public int IdUser { get; set; }
+        public int NumeroCaja { get; set; }
+        public string? NumeroTurno { get; set; }
     }
 }

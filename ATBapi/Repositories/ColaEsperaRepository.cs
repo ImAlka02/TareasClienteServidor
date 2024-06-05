@@ -20,9 +20,14 @@ namespace ATBapi.Repositories
             return Turnos;
         }
 
-        public async Task<List<Colaespera>> GetAllTurnosAsync()
+        public async Task<IEnumerable<Colaespera>> GetAllTurnosAsync()
         {
             return await context.Colaespera.ToListAsync();
+        }
+
+        public async Task<Colaespera> GetTurnoAsync()
+        {
+            return await context.Colaespera.FirstOrDefaultAsync();
         }
 
         public async Task InsertAsync(Colaespera colaEspera)
