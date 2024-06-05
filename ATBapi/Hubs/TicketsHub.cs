@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace ATBapi.Hubs
 {
-	[Authorize(Roles = "Cajero")]
+	
 	public class TicketsHub:Hub
     {
         private readonly ColaEsperaRepository repoColaEspera;
