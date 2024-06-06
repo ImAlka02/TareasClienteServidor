@@ -26,84 +26,97 @@ namespace ATBapi.Hubs
 			this.repoUser = repoUser;
 		}
 
-
+        public async void AgregarCajero() //FUNCIONA
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, "Cajeros");
+			await Clients.Caller.SendAsync("AgregarCajero","Se agrego al grupo de Cajeros.");
+		}
         //Este metodo genera un ticket el cual aparecera en la pantalla
         //luego lo manda a la cola de espera en la base de datos esperando
         //A que un cajero lo reciba
-        public async Task<string> GenerarTicket()
+        public async void GenerarTicket() //FUNCIONA
         {
             var NumeroTurno = "ATB-0001";
-            var colaEsperaList = await repoColaEspera.GetAllTurnosAsync();
-            var turnosDB = await repoTurno.GetAllTurnosAsync();
-            if (turnosDB == null)
+            var colaEsperaList = repoColaEspera.GetAll();
+            var turnosDB =  repoTurno.GetAll().Where(x => x.HoraInicial.Date == DateTime.Now.Date).ToList();
+            if (turnosDB.Count() == 0)
             {
                 if (colaEsperaList.Count() > 0)
                 {
                     if (colaEsperaList.Any(x => x.NumeroTurno == NumeroTurno))
                     {
                         int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
-                        NumeroTurno = "ATB-" + n.ToString();
+                        NumeroTurno = "ATB-" + n.ToString("0000");
                         Colaespera colaEspera = new()
                         {
                             NumeroTurno = NumeroTurno,
                             DateTurnoCreado = DateTime.Now
                         };
-                        await repoColaEspera.InsertAsync(colaEspera);
-                        return NumeroTurno;
+                        repoColaEspera.Insert(colaEspera);
+                        await Clients.Caller.SendAsync("GenerarTicket", colaEspera.NumeroTurno);
+                        await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera.NumeroTurno);
                     }
                 }
-                Colaespera colaEspera1 = new()
+                else
                 {
-                    NumeroTurno = NumeroTurno,
+					Colaespera colaEspera1 = new()
+					{
+						NumeroTurno = NumeroTurno,
+						DateTurnoCreado = DateTime.Now
+					};
+
+					repoColaEspera.Insert(colaEspera1);
+					await Clients.Caller.SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
+					await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
+				}
+                
+            }
+            else
+            {
+
+
+                var LastTurnoCreated = turnosDB.Last().NumeroTurno;
+                var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value);
+                Colaespera colaEspera2 = new()
+                {
+                    NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString(),
                     DateTurnoCreado = DateTime.Now
                 };
 
-                await repoColaEspera.InsertAsync(colaEspera1);
-                return NumeroTurno;
+                repoColaEspera.Insert(colaEspera2);
+                await Clients.Caller.SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+                await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
             }
-
-            var LastTurnoCreated = turnosDB.Last().NumeroTurno;
-            var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value);
-            Colaespera colaEspera2 = new()
-            {
-                NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString(),
-                DateTurnoCreado = DateTime.Now
-            };
-
-            await repoColaEspera.InsertAsync(colaEspera2);
-            return NumeroTurno;
-        }
+		}
 
         //Al mandar llamar actualizar tabla actualizara el dashboar de la pantalla
         //de espera, y creara un objeto Turno, el cual recibira el cajero
-        public async Task<TurnoDTO> AtenderCliente(TurnoAtendiendoDTO dto)
+        public async void AtenderCliente(int IdCajero) //Funciona
         {
-            var turnos = repoTurno.GetAll().Where(x => x.IdUsuario == dto.IdUser && x.Estado == "Atendiendo");
+            var turnos = repoTurno.GetAll().Where(x => x.IdUsuario == IdCajero && x.Estado == "Atendiendo");
             if(turnos.Count() > 0)
             {
                 foreach (var turno in turnos)
                 {
                     turno.Estado = "Atendido";
-                    await repoTurno.UpdateAsync(turno);
+                    repoTurno.Update(turno);
                 }
             }
 
-            if (dto != null)
-            {
+            
                 //Aqui se crea un turno para que el cajero que lo este atendiendo le aparezca en la bd////////
-                var turnoEspera = await repoColaEspera.GetTurnoAsync();
-                var nombreCajaDB = repoUser.Get(dto.IdUser)?.IdCajaNavigation?.Nombre;
+                var turnoEspera = repoColaEspera.GetFirstTurno();
 
                 Turno t = new()
                 {
-                    IdUsuario = dto.IdUser,
-                    HoraInicial = DateTime.UtcNow,
+                    IdUsuario = IdCajero,
+                    HoraInicial = DateTime.Now,
                     HoraFinal = null,
                     NumeroTurno = turnoEspera.NumeroTurno,
-                    TiempoInicio = TimeOnly.Parse(turnoEspera.DateTurnoCreado.ToLongTimeString()),
+                    TiempoInicio = TimeOnly.Parse(turnoEspera.DateTurnoCreado.ToLongTimeString())
                 };
 
-                await repoTurno.InsertAsync(t);
+                repoTurno.Insert(t);
                 ///////////////////////////////////////////////////
                 TurnoDTO turnoDto = new()
                 {
@@ -111,19 +124,14 @@ namespace ATBapi.Hubs
                     NumeroTurno = t.NumeroTurno
                 };
 
-                await repoColaEspera.DeleteAsync(turnoEspera);
-                return turnoDto;
-            }
-            else
-            {
-                return null;
-            }
+                repoColaEspera.Delete(turnoEspera);
+                await Clients.Groups("Cajeros").SendAsync("AtenderCliente", turnoDto);
         }
 
         //Este metodo se coloca despues del metodo AtenderCliente, lo que hace al momento de dar EMPEZAR TURNO o ABRIR CAJA
         //EL metodo de arriba crea un turno y este metodo actualiza el dashboard para tener en tiempo real los turnos y cajas que estan
         //Atendiendo
-        public async Task<ActualizarTablaDTO> ActualizarTabla(ActualizarTablaDTO dto)
+        public async void ActualizarTabla(ActualizarTablaDTO dto)
         {
             if (dto != null)
             {
@@ -138,15 +146,15 @@ namespace ATBapi.Hubs
                         NumeroTurno = turno.NumeroTurno,
                     };
 
-                    return actualizarTablaDTO;
+                    await Clients.Caller.SendAsync("ActualizarTabla", actualizarTablaDTO);
                 }
             }
-            return null;
-        }
+			await Clients.Caller.SendAsync("ActualizarTabla", "No hay clientes");
+		}
 
-        //ESte metodo hara que al darle al boton cancelar o no se presento el cliente
-        //en la tabla Turnos ese cliente aparezca en su estado que fue cancelado y/o no se presento
-        public async void ClienteCancelar(int IdTurno)
+		//ESte metodo hara que al darle al boton cancelar o no se presento el cliente
+		//en la tabla Turnos ese cliente aparezca en su estado que fue cancelado y/o no se presento
+		public async void ClienteCancelar(int IdTurno, int IdCajero)
         {
             if(IdTurno > 0)
             {
@@ -157,7 +165,29 @@ namespace ATBapi.Hubs
                     repoTurno.UpdateAsync(turno);
                 }
             }
-        }
+			//Pasar al siguiente cliente
+			var turnoEspera = repoColaEspera.GetFirstTurno();
+
+			Turno t = new()
+			{
+				IdUsuario = IdCajero,
+				HoraInicial = DateTime.Now,
+				HoraFinal = null,
+				NumeroTurno = turnoEspera.NumeroTurno,
+				TiempoInicio = TimeOnly.Parse(turnoEspera.DateTurnoCreado.ToLongTimeString()),
+			};
+
+			await repoTurno.InsertAsync(t);
+			///////////////////////////////////////////////////
+			TurnoDTO turnoDto = new()
+			{
+				Id = t.Id,
+				NumeroTurno = t.NumeroTurno
+			};
+
+			await repoColaEspera.DeleteAsync(turnoEspera);
+			await Clients.Groups("Cajeros").SendAsync("GenerarTicket", turnoDto);
+		}
 
         //Este metodo hara que al cerrar el banco el Admin se limpie
         //La tabla ColaEspera

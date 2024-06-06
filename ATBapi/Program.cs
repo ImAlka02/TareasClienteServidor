@@ -1,3 +1,4 @@
+using ATBapi.Hubs;
 using ATBapi.Models.Entities;
 using ATBapi.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+
 
 builder.Services.AddDbContext<atbContext>(x => x.UseMySql("server=websitos256.com;database=websitos_atb;user=websitos_atb;password=1h70ak^B4",
     Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb")));
@@ -41,6 +44,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
+app.MapHub<TicketsHub>("/tickets");
 
 app.Run();
 

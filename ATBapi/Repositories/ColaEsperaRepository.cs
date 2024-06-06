@@ -25,9 +25,9 @@ namespace ATBapi.Repositories
             return await context.Colaespera.ToListAsync();
         }
 
-        public async Task<Colaespera> GetTurnoAsync()
+        public Colaespera GetFirstTurno()
         {
-            return await context.Colaespera.FirstOrDefaultAsync();
+            return context.Colaespera.FirstOrDefault();
         }
 
         public async Task InsertAsync(Colaespera colaEspera)
