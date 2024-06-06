@@ -76,10 +76,10 @@ namespace ATBapi.Hubs
 
 
                 var LastTurnoCreated = turnosDB.Last().NumeroTurno;
-                var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value);
+                var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
                 Colaespera colaEspera2 = new()
                 {
-                    NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString(),
+                    NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString("0000"),
                     DateTurnoCreado = DateTime.Now
                 };
 
@@ -93,7 +93,7 @@ namespace ATBapi.Hubs
         //de espera, y creara un objeto Turno, el cual recibira el cajero
         public async void AtenderCliente(int IdCajero) //Funciona
         {
-            var turnos = repoTurno.GetAll().Where(x => x.IdUsuario == IdCajero && x.Estado == "Atendiendo");
+            var turnos = repoTurno.GetAll().Where(x => x.IdUsuario == IdCajero && x.Estado == "Atendiendo").ToList();
             if(turnos.Count() > 0)
             {
                 foreach (var turno in turnos)
