@@ -1,8 +1,11 @@
 ﻿using ATBapi.Helper;
 using ATBapi.Models.DTOs;
 using ATBapi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Security.Claims;
 
 namespace ATBapi.Controllers
 {
@@ -34,6 +37,20 @@ namespace ATBapi.Controllers
             }
 
             return Unauthorized();
+        }
+
+        [HttpPost("/cerrar-sesion")]
+        [Authorize(Roles = "Admin,Cajero")]
+        public IActionResult CerrarSesion()
+        {
+            var user = repoUser.GetById(int.Parse(User.FindFirstValue("Id")));
+
+            if (user == null) { return NotFound(); }
+
+
+            user.Estado = "Desconectado";
+            repoUser.Update(user);
+            return Ok("Se desconecto.");
         }
     }
 }

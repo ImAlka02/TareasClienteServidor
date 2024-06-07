@@ -84,7 +84,7 @@ namespace ATBapi.Controllers
         }
 
         [HttpPut]
-        public ActionResult EditUser(UserCompleteDTO user) 
+        public ActionResult EditUser(UserCompleteDTO user)
         {
             UserValidator validator = new(repoUser.context);
             var resultados = validator.Validate(user);
@@ -101,6 +101,9 @@ namespace ATBapi.Controllers
             userBD.Correo = user.Correo;
             userBD.Contraseña = Encriptacion.StringToSha512(user.Contraseña);
             userBD.IdRole = user.IdRol;
+            userBD.IdCaja = user.IdCaja;
+        
+            //Que pasa si esta conectado
 
             repoUser.Update(userBD);
             return Ok("Se actualizo correctamente.");
@@ -113,6 +116,7 @@ namespace ATBapi.Controllers
             if (user == null) { return NotFound("No se encontro el usuario."); }
 
             //if (int.Parse(User.FindFirstValue("id")) == id) { return BadRequest("No te puedes eliminar a ti mismo"); }
+            //Si esta conectado no lo puede eliminar
             repoUser.Delete(user);
             return Ok("Se elimino correctamente.");
 

@@ -37,7 +37,7 @@ namespace ATBapi.Hubs
         public async void GenerarTicket() //FUNCIONA
         {
             var NumeroTurno = "ATB-0001";
-            var colaEsperaList = repoColaEspera.GetAll();
+            var colaEsperaList = repoColaEspera.GetAll(); //TRAE TODA LA COLA DE ESPERA
             var turnosDB =  repoTurno.GetAll().Where(x => x.HoraInicial.Date == DateTime.Now.Date).ToList();
             if (turnosDB.Count() == 0)
             {
