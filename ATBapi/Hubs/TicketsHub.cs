@@ -39,12 +39,11 @@ namespace ATBapi.Hubs
             var NumeroTurno = "ATB-0001";
             var colaEsperaList = repoColaEspera.GetAll(); //TRAE TODA LA COLA DE ESPERA
             var turnosDB =  repoTurno.GetAll().Where(x => x.HoraInicial.Date == DateTime.Now.Date).ToList();
-            if (turnosDB.Count() == 0)
+            if (turnosDB.Count() != 0)
             {
                 if (colaEsperaList.Count() > 0)
                 {
-                    if (colaEsperaList.Any(x => x.NumeroTurno == NumeroTurno))
-                    {
+                    
                         int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
                         NumeroTurno = "ATB-" + n.ToString("0000");
                         Colaespera colaEspera = new()
@@ -55,7 +54,7 @@ namespace ATBapi.Hubs
                         repoColaEspera.Insert(colaEspera);
                         await Clients.Caller.SendAsync("GenerarTicket", colaEspera.NumeroTurno);
                         await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera.NumeroTurno);
-                    }
+                    
                 }
                 else
                 {
@@ -75,7 +74,7 @@ namespace ATBapi.Hubs
             {
 
 
-                var LastTurnoCreated = turnosDB.Last().NumeroTurno;
+                var LastTurnoCreated = turnosDB.LastOrDefault().NumeroTurno;
                 var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
                 Colaespera colaEspera2 = new()
                 {

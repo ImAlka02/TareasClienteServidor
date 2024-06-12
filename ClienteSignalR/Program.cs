@@ -14,12 +14,16 @@ hub.On<string>("GenerarTicket", x =>
 
 await hub.StartAsync();
 
-Console.WriteLine("Quiere generar ticket? Si/No");
-var respuesta = Console.ReadLine();
-
-if(respuesta == "Si") 
+while (true)
 {
-	await hub.InvokeAsync("GenerarTicket");
-}
+    Console.WriteLine("Quiere generar ticket? Si/No");
+    var respuesta = Console.ReadLine();
 
-Console.ReadLine();
+    if (respuesta == "Si")
+    {
+        await hub.InvokeAsync("GenerarTicket");
+    }
+
+    Console.ReadLine();
+
+}

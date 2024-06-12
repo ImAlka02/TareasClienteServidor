@@ -39,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials().WithOrigins("http://localhost:4321"); });
+app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
