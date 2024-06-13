@@ -48,7 +48,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://cajas.labsystec.net"); });
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
