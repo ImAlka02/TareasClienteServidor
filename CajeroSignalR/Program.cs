@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 
 HubConnection hub = new HubConnectionBuilder()
-				.WithUrl("https://atbapi.websitos256.com/tickets")
+				.WithUrl("https://localhost:7069/tickets")
 				.WithAutomaticReconnect()
 				.Build();
 

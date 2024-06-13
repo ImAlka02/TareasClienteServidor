@@ -18,7 +18,8 @@ builder.Services.AddCors(options =>
         {
             builder.AllowAnyOrigin()
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .WithOrigins("https://cajas.labsystec.net"); ;
         });
 });
 
@@ -48,7 +49,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://cajas.labsystec.net"); });
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

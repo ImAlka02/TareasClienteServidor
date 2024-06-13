@@ -73,18 +73,33 @@ namespace ATBapi.Hubs
             else
             {
 
-
-                var LastTurnoCreated = turnosDB.LastOrDefault().NumeroTurno;
-                var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
-                Colaespera colaEspera2 = new()
+                if(turnosDB.Count() != 0)
                 {
-                    NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString("0000"),
-                    DateTurnoCreado = DateTime.Now
-                };
+                    var LastTurnoCreated = turnosDB.LastOrDefault().NumeroTurno;
+                    var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
+                    Colaespera colaEspera2 = new()
+                    {
+                        NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString("0000"),
+                        DateTurnoCreado = DateTime.Now
+                    };
 
-                repoColaEspera.Insert(colaEspera2);
-                await Clients.Caller.SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
-                await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+                    repoColaEspera.Insert(colaEspera2);
+                    await Clients.Caller.SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+                    await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+                }
+                else
+                {
+                    Colaespera colaEspera1 = new()
+                    {
+                        NumeroTurno = NumeroTurno,
+                        DateTurnoCreado = DateTime.Now
+                    };
+
+                    repoColaEspera.Insert(colaEspera1);
+                    await Clients.Caller.SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
+                    await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
+                }
+              
             }
 		}
 
