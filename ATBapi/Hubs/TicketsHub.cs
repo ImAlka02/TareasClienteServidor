@@ -100,6 +100,7 @@ namespace ATBapi.Hubs
                 foreach (var turno in turnos)
                 {
                     turno.Estado = "Atendido";
+                    turno.HoraFinal = DateTime.Now;
                     repoTurno.Update(turno);
                 }
             }
@@ -144,9 +145,9 @@ namespace ATBapi.Hubs
         {
             if (dto != null)
             {
-                var turno = await repoTurno.GetTurnoByUserAsync(dto.IdCajero);
+                var turno = repoTurno.GetByUser(dto.IdCajero);
 
-                if(turno != null)
+                if (turno != null)
                 {
                     ActualizarTablaDTO actualizarTablaDTO = new()
                     {
@@ -156,47 +157,31 @@ namespace ATBapi.Hubs
                     };
 
                     await Clients.Caller.SendAsync("ActualizarTabla", actualizarTablaDTO);
+                    await Clients.All.SendAsync("ActualizarTabla", actualizarTablaDTO);
                 }
             }
-			await Clients.Caller.SendAsync("ActualizarTabla", "No hay clientes");
-		}
+            else
+            {
+                await Clients.Caller.SendAsync("ActualizarTabla", "No hay clientes");
+
+            }
+        }
 
 		//ESte metodo hara que al darle al boton cancelar o no se presento el cliente
 		//en la tabla Turnos ese cliente aparezca en su estado que fue cancelado y/o no se presento
-		public async void ClienteCancelar(int IdTurno, int IdCajero)
+		public async void ClienteCancelar(string turnoCancelar)
         {
-            if(IdTurno > 0)
+            if(turnoCancelar != "")
             {
-                var turno = await repoTurno.GetTurnoByIdAsync(IdTurno);
+                var turno = repoTurno.GetByTurno(turnoCancelar);
                 if (turno != null)
                 {
                     turno.Estado = "Cancelado";
-                    repoTurno.UpdateAsync(turno);
+                    repoTurno.Update(turno);
+                    await Clients.Groups("Cajeros").SendAsync("ClienteCancelar", turno.NumeroTurno);
                 }
             }
-			//Pasar al siguiente cliente
-			var turnoEspera = repoColaEspera.GetFirstTurno();
-
-			Turno t = new()
-			{
-				IdUsuario = IdCajero,
-				HoraInicial = DateTime.Now,
-				HoraFinal = null,
-				NumeroTurno = turnoEspera.NumeroTurno,
-				TiempoInicio = TimeOnly.Parse(turnoEspera.DateTurnoCreado.ToLongTimeString()),
-			};
-
-			await repoTurno.InsertAsync(t);
-			///////////////////////////////////////////////////
-			TurnoDTO turnoDto = new()
-			{
-				Id = t.Id,
-				NumeroTurno = t.NumeroTurno
-			};
-
-			await repoColaEspera.DeleteAsync(turnoEspera);
-			await Clients.Groups("Cajeros").SendAsync("CancelarTicket", turnoDto);
-		}
+        }
 
         //Este metodo hara que al cerrar el banco el Admin se limpie
         //La tabla ColaEspera

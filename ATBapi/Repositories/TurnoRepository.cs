@@ -11,6 +11,15 @@ namespace ATBapi.Repositories
             
         }
 
+        public Turno? GetByTurno(string turno)
+        {
+            return context.Turno.FirstOrDefault(x => x.NumeroTurno == turno && x.Estado == "Atendiendo" && x.HoraInicial.Date == DateTime.Now.Date);
+        }
+        public Turno? GetByUser(int idUser)
+		{
+			return context.Turno.FirstOrDefault(x => x.IdUsuario == idUser && x.Estado == "Atendiendo") ;
+		}
+
 		public async Task<IEnumerable<Turno>> GetAllTurnosAsync()
 		{
 			return  await context.Turno.Where(x=> x.HoraInicial.Date == DateTime.Now.Date).ToListAsync();

@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiActividades", "ApiActivi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATBapi", "ATBapi\ATBapi.csproj", "{B06A37AC-0CBA-483B-AFB1-8D6027F2A5AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClienteSignalR", "ClienteSignalR\ClienteSignalR.csproj", "{F4E70443-1CB5-46E6-A3F0-5F900336D4C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClienteSignalR", "ClienteSignalR\ClienteSignalR.csproj", "{F4E70443-1CB5-46E6-A3F0-5F900336D4C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CajeroSignalR", "CajeroSignalR\CajeroSignalR.csproj", "{652D724A-67E8-4A48-B54C-CE32FC6E3AD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CajeroSignalR", "CajeroSignalR\CajeroSignalR.csproj", "{652D724A-67E8-4A48-B54C-CE32FC6E3AD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashboardSignalR", "DashboardSignalR\DashboardSignalR.csproj", "{D2DD3342-2838-432C-AF7D-68A9B6D00BF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{652D724A-67E8-4A48-B54C-CE32FC6E3AD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{652D724A-67E8-4A48-B54C-CE32FC6E3AD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{652D724A-67E8-4A48-B54C-CE32FC6E3AD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2DD3342-2838-432C-AF7D-68A9B6D00BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DD3342-2838-432C-AF7D-68A9B6D00BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DD3342-2838-432C-AF7D-68A9B6D00BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DD3342-2838-432C-AF7D-68A9B6D00BF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
