@@ -39,43 +39,27 @@ namespace ATBapi.Hubs
             var NumeroTurno = "ATB-0001";
             var colaEsperaList = repoColaEspera.GetAll(); //TRAE TODA LA COLA DE ESPERA
             var turnosDB =  repoTurno.GetAll().Where(x => x.HoraInicial.Date == DateTime.Now.Date).ToList();
-            if (turnosDB.Count() != 0)
+            if (colaEsperaList.Count() != 0)
             {
-                if (colaEsperaList.Count() > 0)
-                {
-                    
-                        int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
-                        NumeroTurno = "ATB-" + n.ToString("0000");
-                        Colaespera colaEspera = new()
-                        {
-                            NumeroTurno = NumeroTurno,
-                            DateTurnoCreado = DateTime.Now
-                        };
-                        repoColaEspera.Insert(colaEspera);
-                        await Clients.Caller.SendAsync("GenerarTicket", colaEspera.NumeroTurno);
-                        await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera.NumeroTurno);
-                    
-                }
-                else
-                {
-					Colaespera colaEspera1 = new()
-					{
-						NumeroTurno = NumeroTurno,
-						DateTurnoCreado = DateTime.Now
-					};
 
-					repoColaEspera.Insert(colaEspera1);
-					await Clients.Caller.SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
-					await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
-				}
-                
+                int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
+                NumeroTurno = "ATB-" + n.ToString("0000");
+                Colaespera colaEspera = new()
+                {
+                    NumeroTurno = NumeroTurno,
+                    DateTurnoCreado = DateTime.Now
+                };
+                repoColaEspera.Insert(colaEspera);
+                await Clients.Caller.SendAsync("GenerarTicket", colaEspera.NumeroTurno);
+                await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera.NumeroTurno);
+
             }
             else
             {
-
-                if(turnosDB.Count() != 0)
+                if (turnosDB.Count() != 0)
                 {
-                    var LastTurnoCreated = turnosDB.LastOrDefault().NumeroTurno;
+
+                    var LastTurnoCreated = turnosDB.LastOrDefault(x => x.HoraInicial.Date == DateTime.Now.Date).NumeroTurno;
                     var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
                     Colaespera colaEspera2 = new()
                     {
@@ -86,8 +70,9 @@ namespace ATBapi.Hubs
                     repoColaEspera.Insert(colaEspera2);
                     await Clients.Caller.SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
                     await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+
                 }
-                else
+                else 
                 {
                     Colaespera colaEspera1 = new()
                     {
@@ -99,6 +84,8 @@ namespace ATBapi.Hubs
                     await Clients.Caller.SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
                     await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
                 }
+                    
+
               
             }
 		}
@@ -121,6 +108,8 @@ namespace ATBapi.Hubs
                 //Aqui se crea un turno para que el cajero que lo este atendiendo le aparezca en la bd////////
                 var turnoEspera = repoColaEspera.GetFirstTurno();
 
+            if(turnoEspera != null)
+            {
                 Turno t = new()
                 {
                     IdUsuario = IdCajero,
@@ -140,6 +129,12 @@ namespace ATBapi.Hubs
 
                 repoColaEspera.Delete(turnoEspera);
                 await Clients.Groups("Cajeros").SendAsync("AtenderCliente", turnoDto);
+            }
+            else
+            {
+                await Clients.Groups("Cajeros").SendAsync("AtenderCliente", null);
+            }
+                
         }
 
         //Este metodo se coloca despues del metodo AtenderCliente, lo que hace al momento de dar EMPEZAR TURNO o ABRIR CAJA

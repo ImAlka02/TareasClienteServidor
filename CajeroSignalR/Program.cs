@@ -30,14 +30,18 @@ if (respuesta == "Si")
 	await hub.InvokeAsync("AgregarCajero");
 }
 
-Console.WriteLine("Atender cliente? Si/No");
-var respuestaAtender = Console.ReadLine();
-if (respuesta == "Si")
+while (true)
 {
-	await hub.InvokeAsync("AtenderCliente", 2);
+    Console.WriteLine("Atender cliente? Si/No");
+    var respuestaAtender = Console.ReadLine();
+    if (respuesta == "Si")
+    {
+        await hub.InvokeAsync("AtenderCliente", 2);
+    }
+
+    Console.ReadLine();
 }
 
-Console.ReadLine();
 
 class TurnoDto
 {
