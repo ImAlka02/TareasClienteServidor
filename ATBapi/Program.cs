@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin()
-                .WithOrigins("https://cajas.labsystec.net"); ;
+                .WithOrigins("https://cajas.labsystec.net","https://adminsmt.labsystec.net","http://localhost:4321"); ;
         });
 });
 
@@ -50,7 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials().WithOrigins("https://cajas.labsystec.net"); });
+app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials().WithOrigins("https://cajas.labsystec.net","https://adminsmt.labsystec.net","http://localhost:4321"); });
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
