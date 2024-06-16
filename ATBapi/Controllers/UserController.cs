@@ -63,24 +63,32 @@ namespace ATBapi.Controllers
         [HttpPost]
         public ActionResult AddUser(UserCompleteDTO user) 
         {
-            UserValidator validator = new(repoUser.context);
-            var resultados = validator.Validate(user);
-
-            if (!resultados.IsValid)
+            try
             {
-                return BadRequest(resultados.Errors.Select(x => x.ErrorMessage));
+                UserValidator validator = new(repoUser.context);
+                var resultados = validator.Validate(user);
+
+                if (!resultados.IsValid)
+                {
+                    return BadRequest(resultados.Errors.Select(x => x.ErrorMessage));
+                }
+
+                Users u = new()
+                {
+                    Nombre = user.Nombre,
+                    Correo = user.Correo,
+                    Contraseña = Encriptacion.StringToSha512(user.Contraseña),
+                    IdRole = user.IdRol
+                };
+
+                repoUser.Insert(u);
+                return Ok("Se creo correctamente el departamento.");
             }
-
-            Users u = new()
+            catch
             {
-                Nombre = user.Nombre,
-                Correo = user.Correo,
-                Contraseña = Encriptacion.StringToSha512(user.Contraseña),
-                IdRole = user.IdRol
-            };
-
-            repoUser.Insert(u);
-            return Ok("Se creo correctamente el departamento.");
+                return BadRequest();
+            }
+            
         }
 
         [HttpPut]

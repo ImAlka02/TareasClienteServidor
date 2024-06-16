@@ -195,7 +195,7 @@ namespace ATBapi.Hubs
 			};
 
 			await repoColaEspera.DeleteAsync(turnoEspera);
-			await Clients.Groups("Cajeros").SendAsync("GenerarTicket", turnoDto);
+			await Clients.Groups("Cajeros").SendAsync("CancelarTicket", turnoDto);
 		}
 
         //Este metodo hara que al cerrar el banco el Admin se limpie
