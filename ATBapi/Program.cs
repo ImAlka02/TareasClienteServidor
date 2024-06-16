@@ -50,7 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials().WithOrigins("https://cajas.labsystec.net","https://adminsmt.labsystec.net","http://localhost:4321"); });
+app.UseCors(x => { x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials().WithOrigins("https://cajas.labsystec.net","https://adminsmt.labsystec.net","http://localhost:4321","https://clientsm.labsystec.net"); });
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
