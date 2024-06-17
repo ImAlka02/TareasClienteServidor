@@ -33,7 +33,7 @@ namespace ATBapi.Repositories
 
         public Users? GetById(int id) 
         {            
-            var user = context.Users.Include(x => x.IdRoleNavigation).FirstOrDefault(x=>x.Id == id);
+            var user = context.Users.Include(x => x.IdRoleNavigation).Include(x=>x.IdCajaNavigation).FirstOrDefault(x=>x.Id == id);
             if (user != null)
             {
                 return user;

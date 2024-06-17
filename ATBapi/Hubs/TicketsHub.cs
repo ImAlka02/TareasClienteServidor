@@ -183,18 +183,6 @@ namespace ATBapi.Hubs
             }
         }
 
-        //Este metodo hara que al cerrar el banco el Admin se limpie
-        //La tabla ColaEspera
-        public async void CerrarBanco()
-        {
-            var ColaEsperaList = repoColaEspera.GetAll();
-            if(ColaEsperaList.Count() > 0)
-            {
-                foreach (var turno in ColaEsperaList)
-                {
-                    repoColaEspera.DeleteAsync(turno);
-                }
-            }
-        }
+       
     }
 }

@@ -6,7 +6,7 @@ namespace ATBapi.Helper
 {
     public class JwtTokenGenerator
     {
-        public string GetToken(int id, string name, string rol)
+        public string GetToken(int id, string name, string rol, string nombreCaja)
         {
             List<Claim> claims = new();
 

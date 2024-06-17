@@ -33,7 +33,7 @@ namespace ATBapi.Controllers
 
                 user.Estado = "Conectado";
                 repoUser.Update(user);
-                return Ok(jwtToken.GetToken( user.Id, user.Nombre, user.IdRoleNavigation.Nombre));
+                return Ok(jwtToken.GetToken( user.Id, user.Nombre, user.IdRoleNavigation.Nombre, user.IdCajaNavigation.Nombre));
             }
 
             return Unauthorized();

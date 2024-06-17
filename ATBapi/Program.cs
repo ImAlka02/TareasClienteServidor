@@ -1,3 +1,4 @@
+using ApiActividades.Repositories;
 using ATBapi.Hubs;
 using ATBapi.Models.Entities;
 using ATBapi.Repositories;
@@ -39,6 +40,7 @@ builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<CajaRepository>();
 builder.Services.AddTransient<TurnoRepository>();
 builder.Services.AddTransient<ColaEsperaRepository>();
+builder.Services.AddTransient<Repository<Configuracion>>();
 var app = builder.Build();
 
 

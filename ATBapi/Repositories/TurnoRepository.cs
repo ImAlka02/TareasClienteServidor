@@ -10,7 +10,16 @@ namespace ATBapi.Repositories
 		{
             
         }
+        public IEnumerable<Turno> GetAllT()
+		{
+			return context.Turno.Include(x => x.IdUsuarioNavigation).Include(x => x.IdUsuarioNavigation.IdCajaNavigation);
 
+        }
+
+        public IEnumerable<Turno> GetAllTurnos()
+		{
+			return context.Turno.Include(x=>x.IdUsuarioNavigation).Include(x => x.IdUsuarioNavigation.IdCajaNavigation).Where(x => x.Estado == "Atendiendo" && x.HoraInicial.Date == DateTime.Now.Date);
+		}
         public Turno? GetByTurno(string turno)
         {
             return context.Turno.FirstOrDefault(x => x.NumeroTurno == turno && x.Estado == "Atendiendo" && x.HoraInicial.Date == DateTime.Now.Date);

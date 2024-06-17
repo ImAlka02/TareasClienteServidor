@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 
 HubConnection hub = new HubConnectionBuilder()
-				.WithUrl("https://localhost:7069/tickets")
-				.WithAutomaticReconnect()
+				.WithUrl("https://atbapi.websitos256.com/tickets") //"https://localhost:7069/tickets"
+                .WithAutomaticReconnect()
 				.Build();
 
 hub.On<string>("AgregarCajero", x =>
@@ -44,11 +44,11 @@ while (true)
     var respuestaAtender = Console.ReadLine();
     if (respuesta == "Si")
     {
-        await hub.InvokeAsync("AtenderCliente", 2);
+        await hub.InvokeAsync("AtenderCliente", 6);
         await hub.InvokeAsync("ActualizarTabla", new ActualizarTablaDTO()
         {
-            IdCajero = 2,
-            NombreCaja = "1",
+            IdCajero = 6,
+            NombreCaja = "2",
             NumeroTurno = turno
         });
     }

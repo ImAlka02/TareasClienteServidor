@@ -20,16 +20,15 @@ public partial class atbContext : DbContext
 
     public virtual DbSet<Colaespera> Colaespera { get; set; }
 
+    public virtual DbSet<Configuracion> Configuracion { get; set; }
+
     public virtual DbSet<Roles> Roles { get; set; }
 
     public virtual DbSet<Turno> Turno { get; set; }
 
     public virtual DbSet<Users> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=websitos256.com;database=websitos_atb;user=websitos_atb;password=1h70ak^B4", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
-
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -57,6 +56,18 @@ public partial class atbContext : DbContext
             entity.Property(e => e.NumeroTurno).HasMaxLength(8);
         });
 
+        modelBuilder.Entity<Configuracion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("configuracion");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.Estado)
+                .HasMaxLength(45)
+                .HasDefaultValueSql("'Cerrado'");
+        });
+
         modelBuilder.Entity<Roles>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -78,7 +89,7 @@ public partial class atbContext : DbContext
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Estado)
                 .HasMaxLength(45)
-                .HasDefaultValueSql("'\"Atendiendo\"'");
+                .HasDefaultValueSql("'Atendiendo'");
             entity.Property(e => e.HoraFinal).HasColumnType("datetime");
             entity.Property(e => e.HoraInicial).HasColumnType("datetime");
             entity.Property(e => e.IdUsuario).HasColumnType("int(11)");
