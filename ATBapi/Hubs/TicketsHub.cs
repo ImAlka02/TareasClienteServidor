@@ -107,7 +107,7 @@ namespace ATBapi.Hubs
 
             
                 //Aqui se crea un turno para que el cajero que lo este atendiendo le aparezca en la bd////////
-                var turnoEspera = repoColaEspera.GetFirstTurno();
+            var turnoEspera = repoColaEspera.GetFirstTurno();
 
             if(turnoEspera != null)
             {

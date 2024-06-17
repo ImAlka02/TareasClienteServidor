@@ -119,14 +119,15 @@ namespace ATBapi.Controllers
             return Ok("Se actualizo correctamente.");
         }
 
-        [HttpDelete("Eliminar/{id}")]
+        [HttpDelete("{id}")]
         public ActionResult DeleteUser(int id) 
         {
             var user = repoUser.GetById(id);
             if (user == null) { return NotFound("No se encontro el usuario."); }
 
-            //if (int.Parse(User.FindFirstValue("id")) == id) { return BadRequest("No te puedes eliminar a ti mismo"); }
+            if (int.Parse(User.FindFirstValue("Id")) == user.Id) { return BadRequest("No te puedes eliminar a ti mismo"); }
             //Si esta conectado no lo puede eliminar
+            if(user.Estado == "Conectado") { return BadRequest("No se puede eliminar a alguien conectado. "); }
             repoUser.Delete(user);
             return Ok("Se elimino correctamente.");
 
