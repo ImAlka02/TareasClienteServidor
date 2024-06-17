@@ -3,6 +3,7 @@ using ATBapi.Models.DTOs;
 using ATBapi.Models.Entities;
 using ATBapi.Models.Validators;
 using ATBapi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ namespace ATBapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly UserRepository repoUser;

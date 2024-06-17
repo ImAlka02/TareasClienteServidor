@@ -23,7 +23,7 @@ namespace ATBapi.Repositories
 
         public Users? GetByEmail(string email)
         {
-            var user = context.Users.Include(x=>x.IdRoleNavigation).FirstOrDefault(x => x.Correo == email);
+            var user = context.Users.Include(x=>x.IdRoleNavigation).Include(x=>x.IdCajaNavigation).FirstOrDefault(x => x.Correo == email);
             if(user != null)
             {
                 return user;

@@ -14,6 +14,7 @@ namespace ATBapi.Helper
             claims.Add(new Claim(ClaimTypes.Role, rol));
             claims.Add(new Claim("Id", id.ToString()));
 			claims.Add(new Claim(ClaimTypes.Name, name));
+            claims.Add(new Claim("NombreCaja", nombreCaja));
 			claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "ATBapi"));
             claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "ATBapp"));
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));

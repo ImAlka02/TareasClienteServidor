@@ -3,6 +3,7 @@ using ATBapi.Models.DTOs;
 using ATBapi.Models.Entities;
 using ATBapi.Models.Validators;
 using ATBapi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace ATBapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CajaController : ControllerBase
     {
         private readonly CajaRepository repoCaja;
