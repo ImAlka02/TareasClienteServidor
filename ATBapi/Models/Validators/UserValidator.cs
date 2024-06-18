@@ -20,9 +20,13 @@ namespace ATBapi.Models.Validators
             RuleFor(x => x.Contraseña)
                 .NotEmpty().WithMessage("La contraseña no debe estar vacía.");
             RuleFor(x => x.IdRol).NotEmpty().WithMessage("El rol no debe estar vacío.");
+            RuleFor(x => x.IdCaja).Must(CajaEnUso).WithMessage("La caja ya esta en uso. ");
             this.context = context;
         }
-
+        private bool CajaEnUso(int idCaja)
+        {
+            return !context.Users.Any(x=>x.IdCaja == idCaja);
+        }
         private bool Repetido(string dato)
         {
             return !context.Users.Any(x=> x.Correo == dato );

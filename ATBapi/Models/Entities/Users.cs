@@ -19,6 +19,8 @@ public partial class Users
 
     public string Estado { get; set; } = null!;
 
+    public int Eliminado { get; set; }
+
     public virtual Caja? IdCajaNavigation { get; set; }
 
     public virtual Roles IdRoleNavigation { get; set; } = null!;

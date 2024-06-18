@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Threading.Tasks;
 using System;
 using System.Text.RegularExpressions;
+using ApiActividades.Repositories;
 
 namespace ATBapi.Hubs
 {
@@ -18,13 +19,15 @@ namespace ATBapi.Hubs
         private readonly ColaEsperaRepository repoColaEspera;
         private readonly TurnoRepository repoTurno;
 		private readonly UserRepository repoUser;
+        private readonly Repository<Configuracion> repoConfig;
 
-		public TicketsHub(ColaEsperaRepository repoColaEspera, TurnoRepository repoTurno, UserRepository repoUser)
+        public TicketsHub(ColaEsperaRepository repoColaEspera, TurnoRepository repoTurno, UserRepository repoUser, Repository<Configuracion> repoConfig)
         {
             this.repoColaEspera = repoColaEspera;
             this.repoTurno = repoTurno;
 			this.repoUser = repoUser;
-		}
+            this.repoConfig = repoConfig;
+        }
 
         public async void AgregarCajero() //FUNCIONA
         {
@@ -36,54 +39,66 @@ namespace ATBapi.Hubs
         //A que un cajero lo reciba
         public async void GenerarTicket() //FUNCIONA
         {
-            var NumeroTurno = "ATB-0001";
-            var colaEsperaList = repoColaEspera.GetAll(); //TRAE TODA LA COLA DE ESPERA
-            var turnosDB =  repoTurno.GetAll().Where(x => x.HoraInicial.Date == DateTime.Now.Date).ToList();
-            if (colaEsperaList.Count() != 0)
+            var banco = repoConfig.Get(1);
+
+            if(banco.Estado == "Cerrado") 
             {
-
-                int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
-                NumeroTurno = "ATB-" + n.ToString("0000");
-                Colaespera colaEspera = new()
-                {
-                    NumeroTurno = NumeroTurno,
-                    DateTurnoCreado = DateTime.Now
-                };
-                repoColaEspera.Insert(colaEspera);
-                await Clients.Caller.SendAsync("GenerarTicket", colaEspera.NumeroTurno);
-                await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera.NumeroTurno);
-
+                await Clients.Caller.SendAsync("GenerarTicket", "El banco esta cerrado");
+                await Clients.Groups("Cajeros").SendAsync("GenerarTicket", "El banco esta cerrado");
             }
             else
             {
-                if (turnosDB.Count() != 0)
+
+                var NumeroTurno = "ATB-0001";
+                var colaEsperaList = repoColaEspera.GetAll(); //TRAE TODA LA COLA DE ESPERA
+                var turnosDB =  repoTurno.GetAll().Where(x => x.HoraInicial.Date == DateTime.Now.Date).ToList();
+                if (colaEsperaList.Count() != 0)
                 {
 
-                    var LastTurnoCreated = turnosDB.LastOrDefault(x => x.HoraInicial.Date == DateTime.Now.Date).NumeroTurno;
-                    var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
-                    Colaespera colaEspera2 = new()
-                    {
-                        NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString("0000"),
-                        DateTurnoCreado = DateTime.Now
-                    };
-
-                    repoColaEspera.Insert(colaEspera2);
-                    await Clients.Caller.SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
-                    await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
-
-                }
-                else 
-                {
-                    Colaespera colaEspera1 = new()
+                    int n = int.Parse(colaEsperaList.Last().NumeroTurno.Substring(4, 4)) + 1;
+                    NumeroTurno = "ATB-" + n.ToString("0000");
+                    Colaespera colaEspera = new()
                     {
                         NumeroTurno = NumeroTurno,
                         DateTurnoCreado = DateTime.Now
                     };
+                    repoColaEspera.Insert(colaEspera);
+                    await Clients.Caller.SendAsync("GenerarTicket", colaEspera.NumeroTurno);
+                    await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera.NumeroTurno);
 
-                    repoColaEspera.Insert(colaEspera1);
-                    await Clients.Caller.SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
-                    await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
                 }
+                else
+                {
+                    if (turnosDB.Count() != 0)
+                    {
+
+                        var LastTurnoCreated = turnosDB.LastOrDefault(x => x.HoraInicial.Date == DateTime.Now.Date).NumeroTurno;
+                        var NuevoNumeroTurno = int.Parse(Regex.Match(LastTurnoCreated, @"\d+").Value) + 1;
+                        Colaespera colaEspera2 = new()
+                        {
+                            NumeroTurno = "ATB-" + NuevoNumeroTurno.ToString("0000"),
+                            DateTurnoCreado = DateTime.Now
+                        };
+
+                        repoColaEspera.Insert(colaEspera2);
+                        await Clients.Caller.SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+                        await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera2.NumeroTurno);
+
+                    }
+                    else 
+                    {
+                        Colaespera colaEspera1 = new()
+                        {
+                            NumeroTurno = NumeroTurno,
+                            DateTurnoCreado = DateTime.Now
+                        };
+
+                        repoColaEspera.Insert(colaEspera1);
+                        await Clients.Caller.SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
+                        await Clients.Groups("Cajeros").SendAsync("GenerarTicket", colaEspera1.NumeroTurno);
+                    }
+                }
+
                     
 
               
@@ -94,6 +109,8 @@ namespace ATBapi.Hubs
         //de espera, y creara un objeto Turno, el cual recibira el cajero
         public async void AtenderCliente(int IdCajero) //Funciona
         {
+            
+
             var turnos = repoTurno.GetAll().Where(x => x.IdUsuario == IdCajero && x.Estado == "Atendiendo").ToList();
             if(turnos.Count() > 0)
             {

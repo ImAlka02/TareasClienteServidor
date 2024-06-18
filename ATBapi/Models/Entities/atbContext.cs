@@ -28,7 +28,7 @@ public partial class atbContext : DbContext
 
     public virtual DbSet<Users> Users { get; set; }
 
-   
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -115,6 +115,7 @@ public partial class atbContext : DbContext
             entity.Property(e => e.Id).HasColumnType("int(11)");
             entity.Property(e => e.Contraseña).HasMaxLength(255);
             entity.Property(e => e.Correo).HasMaxLength(255);
+            entity.Property(e => e.Eliminado).HasColumnType("int(11)");
             entity.Property(e => e.Estado)
                 .HasMaxLength(45)
                 .HasDefaultValueSql("'Desconectado'");

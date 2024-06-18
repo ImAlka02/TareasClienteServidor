@@ -25,7 +25,7 @@ namespace ATBapi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<UserCompleteDTO>> GetAllUsers()
         {
-            var users = repoUser.GetAllUsers()?.Select(x=> new UserCompleteDTO()
+            var users = repoUser.GetAllUsers()?.Where(x=> x.Id != int.Parse(User.FindFirstValue("Id")) && x.Eliminado < 1).Select(x=> new UserCompleteDTO()
             {
                 Correo = x.Correo,
                 Id = x.Id,
@@ -53,7 +53,8 @@ namespace ATBapi.Controllers
                     Correo = user.Correo,
                     Id = user.Id,
                     IdRol = user.IdRole,
-                    Nombre = user.Nombre
+                    Nombre = user.Nombre,
+                    IdCaja = user.IdCaja ?? 0
                 };
 
                 return Ok(dto);
@@ -106,7 +107,7 @@ namespace ATBapi.Controllers
 
             var userBD = repoUser.GetById(user.Id);
             if (userBD == null) { return NotFound("No existe este usuario."); }
-
+            if(userBD.Estado == "Conectado") { return BadRequest("El usuario esta conectado, hasta que se desconecte se podra modificar. "); }
             userBD.Nombre = user.Nombre;
             userBD.Correo = user.Correo;
             userBD.Contraseña = Encriptacion.StringToSha512(user.Contraseña);
@@ -128,7 +129,9 @@ namespace ATBapi.Controllers
             if (int.Parse(User.FindFirstValue("Id")) == user.Id) { return BadRequest("No te puedes eliminar a ti mismo"); }
             //Si esta conectado no lo puede eliminar
             if(user.Estado == "Conectado") { return BadRequest("No se puede eliminar a alguien conectado. "); }
-            repoUser.Delete(user);
+
+            user.Eliminado = 1;
+            repoUser.Update(user);
             return Ok("Se elimino correctamente.");
 
 
