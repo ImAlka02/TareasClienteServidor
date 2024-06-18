@@ -21,28 +21,51 @@ namespace ATBapi.Controllers
         [HttpGet]
         public ActionResult<EstadisticasDTO> GetEstadisticas()
         {
-            var estadisticas = repoTurno.GetAllT().Select(x=> new {
-                
-                HoraInicialPromedio = TimeOnly.FromDateTime(x.HoraInicial),
-                HoraFinalPromedio = TimeOnly.FromDateTime(x.HoraFinal.Value),
-                HoraInicioAtencionPromedio = x.TiempoInicio
-            }).ToList();
+            var turnos = repoTurno.GetAllT().Where(x=>x.HoraFinal != null && x.Estado != "Cancelado" && x.Estado != "Atendiendo").ToList();
 
-            double tiempoPromedioDeAtencion = estadisticas.Average(x =>
-            (x.HoraInicialPromedio - x.HoraFinalPromedio).TotalHours);
-
-            var tiempoPromedioEspera = estadisticas.Average(x => (x.HoraInicioAtencionPromedio - x.HoraFinalPromedio).TotalHours);
-
-            EstadisticasDTO estadisticasDTO = new EstadisticasDTO()
+            if (turnos == null || !turnos.Any())
             {
-                TiempoPromedioDeAtencion = tiempoPromedioDeAtencion.ToString("F2"), //Tiempo promedio en horas
-                TiempoPromedioDeEspera = tiempoPromedioEspera.ToString("F2"), //Tiempo promedio en horas
-                
+                return NotFound("No se encontraron turnos.");
+            }
+
+            var tiempoEsperaTotal = TimeSpan.Zero;
+            var tiempoAtencionTotal = TimeSpan.Zero;
+            var totalTurnosConFinal = 0;
+
+            var personasAtendidasPorCaja = new Dictionary<string, int>();
+
+            foreach (var turno in turnos)
+            {
+                if (turno.HoraFinal.HasValue)
+                {
+                    var tiempoInicioDateTime = turno.HoraInicial.Date + turno.TiempoInicio.ToTimeSpan();
+                    var tiempoEspera = turno.HoraInicial - tiempoInicioDateTime;
+
+                    var tiempoAtencion = turno.HoraFinal.Value - turno.HoraInicial;
+
+                    tiempoEsperaTotal += tiempoEspera;
+                    tiempoAtencionTotal += tiempoAtencion;
+                    totalTurnosConFinal++;
+
+                    if (personasAtendidasPorCaja.ContainsKey(turno.IdUsuarioNavigation.IdCajaNavigation.Nombre))
+                    {
+                        personasAtendidasPorCaja[turno.IdUsuarioNavigation.IdCajaNavigation.Nombre]++;
+                    }
+                    else
+                    {
+                        personasAtendidasPorCaja[turno.IdUsuarioNavigation.IdCajaNavigation.Nombre] = 1;
+                    }
+                }
+            }
+
+            var estadisticasDTO = new EstadisticasDTO
+            {
+                TiempoPromedioDeEspera = (tiempoEsperaTotal / totalTurnosConFinal).ToString(@"hh\:mm\:ss"),
+                TiempoPromedioDeAtencion = (tiempoAtencionTotal / totalTurnosConFinal).ToString(@"hh\:mm\:ss"),
+                PersonasAtendidasPorCaja = personasAtendidasPorCaja
             };
 
-            
-
-            return Ok();
+            return Ok(estadisticasDTO);
         }
     }
 }

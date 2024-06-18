@@ -44,11 +44,11 @@ while (true)
     var respuestaAtender = Console.ReadLine();
     if (respuesta == "Si")
     {
-        await hub.InvokeAsync("AtenderCliente", 6);
+        await hub.InvokeAsync("AtenderCliente", 10);
         await hub.InvokeAsync("ActualizarTabla", new ActualizarTablaDTO()
         {
-            IdCajero = 6,
-            NombreCaja = "2",
+            IdCajero = 10,
+            NombreCaja = "Caja 3",
             NumeroTurno = turno
         });
     }

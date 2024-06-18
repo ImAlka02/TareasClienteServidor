@@ -146,11 +146,11 @@ namespace ATBapi.Hubs
                 };
 
                 repoColaEspera.Delete(turnoEspera);
-                await Clients.Groups("Cajeros").SendAsync("AtenderCliente", turnoDto);
+                await Clients.Caller.SendAsync("AtenderCliente", turnoDto);
             }
             else
             {
-                await Clients.Groups("Cajeros").SendAsync("AtenderCliente", null);
+                await Clients.Caller.SendAsync("AtenderCliente", null);
             }
                 
         }
@@ -195,7 +195,7 @@ namespace ATBapi.Hubs
                 {
                     turno.Estado = "Cancelado";
                     repoTurno.Update(turno);
-                    await Clients.Groups("Cajeros").SendAsync("ClienteCancelar", turno.NumeroTurno);
+                    await Clients.Caller.SendAsync("ClienteCancelar", turno.NumeroTurno);
                 }
             }
         }
