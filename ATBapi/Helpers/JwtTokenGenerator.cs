@@ -18,10 +18,10 @@ namespace ATBapi.Helper
             {
                 claims.Add(new Claim("NombreCaja", nombreCaja));
             }
-            claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "ATBapi"));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "ATBapp"));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(20).ToString()));
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "ATBapi"));
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "ATBapp"));
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(20).ToString()));
 
             JwtSecurityTokenHandler handler = new();
 
