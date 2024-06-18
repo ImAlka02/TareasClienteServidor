@@ -15,10 +15,12 @@ namespace ATBapi.Controllers
     public class CajaController : ControllerBase
     {
         private readonly CajaRepository repoCaja;
+        private readonly UserRepository repoUser;
 
-        public CajaController(CajaRepository repoCaja)
+        public CajaController(CajaRepository repoCaja, UserRepository repoUser)
         {
             this.repoCaja = repoCaja;
+            this.repoUser = repoUser;
         }
 
         [HttpGet]
@@ -73,6 +75,34 @@ namespace ATBapi.Controllers
             cajaBD.Nombre = caja.Nombre;
             repoCaja.Update(cajaBD);
             return Ok("Se actualizo correctamente la caja.");
+        }
+
+        [HttpDelete]
+        public ActionResult EliminarCaja(CajaDTO cajaDto)
+        {
+            var caja = repoCaja.GetById(cajaDto.Id);
+            if(caja == null) { return NotFound("La caja a eliminar no se encontro. "); }
+            if(caja.Users.Count != 0) 
+            {
+                foreach (var user in caja.Users)
+                {
+                    if(user.Estado == "Conectado") 
+                    {
+                        return BadRequest("No se puede eliminar una caja en uso. "); 
+                    }
+                    else
+                    {
+                        user.IdCaja = null;
+                        repoUser.Update(user);
+                        repoCaja.Delete(caja);
+                        return Ok("Se elimino correctamente. ");
+                    }
+                }
+                repoCaja.Delete(caja);
+                return Ok("Se elimino correctamente. ");
+            }
+            repoCaja.Delete(caja);
+            return Ok("Se elimino correctamente. ");
         }
     }
 }

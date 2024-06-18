@@ -80,6 +80,7 @@ namespace ATBapi.Controllers
                 {
                     Nombre = user.Nombre,
                     Correo = user.Correo,
+                    IdCaja = user.IdCaja,
                     Contraseña = Encriptacion.StringToSha512(user.Contraseña),
                     IdRole = user.IdRol
                 };
@@ -97,7 +98,7 @@ namespace ATBapi.Controllers
         [HttpPut]
         public ActionResult EditUser(UserCompleteDTO user)
         {
-            UserValidator validator = new(repoUser.context);
+            UserValidatorEdit validator = new(repoUser.context);
             var resultados = validator.Validate(user);
 
             if (!resultados.IsValid)
@@ -108,13 +109,17 @@ namespace ATBapi.Controllers
             var userBD = repoUser.GetById(user.Id);
             if (userBD == null) { return NotFound("No existe este usuario."); }
             if(userBD.Estado == "Conectado") { return BadRequest("El usuario esta conectado, hasta que se desconecte se podra modificar. "); }
+
+            var cajaUso = repoUser.context.Users.FirstOrDefault(x => x.IdCaja == user.IdCaja);
+            if(cajaUso != null) { return BadRequest("La caja seleccionada ya esta en uso. "); }
+
             userBD.Nombre = user.Nombre;
             userBD.Correo = user.Correo;
             userBD.Contraseña = Encriptacion.StringToSha512(user.Contraseña);
             userBD.IdRole = user.IdRol;
+            
             userBD.IdCaja = user.IdCaja;
         
-            //Que pasa si esta conectado
 
             repoUser.Update(userBD);
             return Ok("Se actualizo correctamente.");

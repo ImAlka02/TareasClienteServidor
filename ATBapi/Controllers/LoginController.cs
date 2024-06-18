@@ -31,15 +31,19 @@ namespace ATBapi.Controllers
             {
                 JwtTokenGenerator jwtToken = new();
 
-                user.Estado = "Conectado";
-                repoUser.Update(user);
-                if (user.IdCajaNavigation == null) 
-                { 
+                
+                if (user.IdRoleNavigation.Nombre == "Admin") 
+                {
+                    user.Estado = "Conectado";
+                    repoUser.Update(user);
                     return Ok(jwtToken.GetToken(user.Id, user.Nombre, user.IdRoleNavigation.Nombre, null)); 
                 }
                 else
                 {
-                    return Ok(jwtToken.GetToken( user.Id, user.Nombre, user.IdRoleNavigation.Nombre, user.IdCajaNavigation.Nombre ?? null));
+                    if(user.IdCaja == null) { return BadRequest("No puede acceder hasta que tenga una caja asignada. "); }
+                    user.Estado = "Conectado";
+                    repoUser.Update(user);
+                    return Ok(jwtToken.GetToken( user.Id, user.Nombre, user.IdRoleNavigation.Nombre, user.IdCajaNavigation.Nombre));
 
                 }
             }

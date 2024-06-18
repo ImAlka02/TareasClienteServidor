@@ -1,5 +1,6 @@
 ﻿using ApiActividades.Repositories;
 using ATBapi.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATBapi.Repositories
 {
@@ -22,7 +23,7 @@ namespace ATBapi.Repositories
 
         public Caja? GetById (int? id) 
         {
-            var caja = context.Caja.Find(id);
+            var caja = context.Caja.Include(x=>x.Users).FirstOrDefault(x=>x.Id == id);
             if (caja != null)
             {
                 return caja;

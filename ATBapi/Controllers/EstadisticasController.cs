@@ -8,7 +8,6 @@ namespace ATBapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class EstadisticasController : ControllerBase
     {
         private readonly TurnoRepository repoTurno;
@@ -47,14 +46,17 @@ namespace ATBapi.Controllers
                     tiempoAtencionTotal += tiempoAtencion;
                     totalTurnosConFinal++;
 
-                    if (personasAtendidasPorCaja.ContainsKey(turno.IdUsuarioNavigation.IdCajaNavigation.Nombre))
+                    if(turno.IdUsuarioNavigation.IdCajaNavigation != null)
                     {
-                        personasAtendidasPorCaja[turno.IdUsuarioNavigation.IdCajaNavigation.Nombre]++;
-                    }
-                    else
-                    {
-                        personasAtendidasPorCaja[turno.IdUsuarioNavigation.IdCajaNavigation.Nombre] = 1;
-                    }
+                        if (personasAtendidasPorCaja.ContainsKey(turno.IdUsuarioNavigation.IdCajaNavigation.Nombre))
+                        {
+                            personasAtendidasPorCaja[turno.IdUsuarioNavigation.IdCajaNavigation.Nombre]++;
+                        }
+                        else
+                        {
+                            personasAtendidasPorCaja[turno.IdUsuarioNavigation.IdCajaNavigation.Nombre] = 1;
+                        }
+                    } 
                 }
             }
 
